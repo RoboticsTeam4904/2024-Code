@@ -1,6 +1,7 @@
 package org.usfirst.frc4904.robot;
 
 import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;
@@ -63,6 +64,8 @@ public class RobotMap {
             public static final int BACK_LEFT_TURN = 7;
             public static final int BACK_RIGHT_DRIVE = 4;
             public static final int BACK_RIGHT_TURN = 8;
+            public static final int CLIMBER_LEFT = 11;
+            public static final int CLIMBER_RIGHT = 12;
 
         }
 
@@ -165,6 +168,9 @@ public class RobotMap {
         public static CANTalonFX armMotor;
         public static DutyCycleEncoder armEncoder;
         public static ArmSubsystem arm;
+        public static ClimberSubsystem climber;
+        public static CANSparkMax climberLeft;
+        public static CANSparkMax climberRight;
     }
 
     public static class NetworkTables {
@@ -203,6 +209,9 @@ public class RobotMap {
         Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
 
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
+        Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);
+        Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);
+        Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
         // Component.navx = new AHRS(SerialPort.Port.kMXP);
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);

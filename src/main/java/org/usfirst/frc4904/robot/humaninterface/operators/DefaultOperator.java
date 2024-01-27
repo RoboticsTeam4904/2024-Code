@@ -22,6 +22,9 @@ public class DefaultOperator extends Operator {
 	public void bindCommands() {
 		var joystick = RobotMap.HumanInput.Operator.joystick;
 		joystick.button1.onTrue(RobotMap.Component.arm.c_holdOuttakeAngle(200, 200, null));
+		joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());
+		joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());
+
 		
 		// manual extension and retraction
         // joystick.button3.onTrue(RobotMap.Component.arm.armExtensionSubsystem.c_controlVelocity(() -> -0.45));
