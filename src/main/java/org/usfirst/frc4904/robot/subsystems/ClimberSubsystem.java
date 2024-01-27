@@ -15,6 +15,7 @@ public class ClimberSubsystem extends SubsystemBase{
         this.motorRight = motorRight;
         this.motorLeft.setIdleMode(IdleMode.kBrake);
         this.motorLeft.setIdleMode(IdleMode.kBrake);
+        this.motorLeft.setInverted(true);
     }
 
     public Command c_climberUp() {
