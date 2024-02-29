@@ -1,5 +1,6 @@
 package org.usfirst.frc4904.robot;
 
+import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;
@@ -160,6 +161,10 @@ public class RobotMap {
         // public static RobotUDP robotUDP;
 
         public static SwerveSubsystem chassis;
+
+        public static CANTalonFX armMotor;
+        public static DutyCycleEncoder armEncoder;
+        public static ArmSubsystem arm;
     }
 
     public static class NetworkTables {
@@ -197,11 +202,12 @@ public class RobotMap {
     public RobotMap() {
         Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
 
+        Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
         // Component.navx = new AHRS(SerialPort.Port.kMXP);
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
-	    // HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
+	    // HumanInput.Operator.joystick = new CustomCommandJosystick(Port.HumanInput.joystick, 0.01);
         // // // UDP things
         // // try {
         // //     Component.robotUDP = new RobotUDP(Port.Network.LOCAL_SOCKET_ADDRESS, Port.Network.LOCALIZATION_ADDRESS);

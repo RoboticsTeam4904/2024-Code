@@ -13,6 +13,7 @@ package org.usfirst.frc4904.robot;
 import org.usfirst.frc4904.robot.humaninterface.drivers.SwerveGain;
 import org.usfirst.frc4904.robot.humaninterface.operators.DefaultOperator;
 import org.usfirst.frc4904.standard.CommandRobotBase;
+import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 //import org.usfirst.frc4904.standard.CommandRobotBase;
 // import org.usfirst.frc4904.standard.custom.CommandSendableChooser;
 import org.usfirst.frc4904.standard.humaninput.Driver;
@@ -54,6 +55,7 @@ public class Robot extends CommandRobotBase {
     private final Driver driver = new SwerveGain();
     private final org.usfirst.frc4904.standard.humaninput.Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
+    private final CustomCommandJoystick joystick = new CustomCommandJoystick(0, 0.1);
 
     protected double scaleGain(double input, double gain, double exp) {
 		return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
@@ -92,6 +94,9 @@ public void teleopInitialize() {
     //     ));
     RobotMap.Component.chassis.setDefaultCommand(
         RobotMap.Component.chassis.driveCommand(() -> driver.getY(), () -> driver.getX(), () -> driver.getTurnSpeed())
+    );
+    RobotMap.Component.arm.setDefaultCommand(
+        RobotMap.Component.arm.c_controlAngularVelocity(() -> joystick.getAxis(2) * 10)
     );
 
 }   
