@@ -63,6 +63,7 @@ public class RobotMap {
             public static final int BACK_LEFT_TURN = 7;
             public static final int BACK_RIGHT_DRIVE = 4;
             public static final int BACK_RIGHT_TURN = 8;
+            public static final int ARM_MOTOR = 9;
 
         }
 
@@ -71,6 +72,7 @@ public class RobotMap {
             public static final int ENCODER_FR = 1;
             public static final int ENCODER_BL = 2;
             public static final int ENCODER_BR = 3;
+            public static final int ARM_ENCODER = 4;
         }
 
         public static class CAN {
@@ -201,7 +203,8 @@ public class RobotMap {
 
     public RobotMap() {
         Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
-
+        Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
+        Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); //TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
         // Component.navx = new AHRS(SerialPort.Port.kMXP);
 
