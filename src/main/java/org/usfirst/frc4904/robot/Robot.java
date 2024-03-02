@@ -106,7 +106,8 @@ public void teleopInitialize() {
     public void teleopExecute() {
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
-        
+        SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
+
         // //various logging can go here
         // //TODO: getAbsolutePosition() MIGHT NOT WORK OR BE IN RIGHT UNITS!
         // SmartDashboard.putNumber("FL angle-1", RobotMap.Component.FLturnEncoder.getAbsolutePosition());
