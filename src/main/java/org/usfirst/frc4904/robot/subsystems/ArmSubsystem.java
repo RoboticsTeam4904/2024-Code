@@ -26,10 +26,10 @@ import org.usfirst.frc4904.robot.Utils;
 public class ArmSubsystem extends SubsystemBase {
 
     // TODO: get actual values (current values are from last year)
-    public static final double kS = 0.10126;
-    public static final double kV = 1.8894;
-    public static final double kA = 0.048547;
-    public static final double kG = 0.32;
+    public static final double kS = 0.00;
+    public static final double kV = 1.51;
+    public static final double kA = 0.05;
+    public static final double kG = 0.76;
 
     public static final double kP = 0.06;
     public static final double kI = 0.02;
