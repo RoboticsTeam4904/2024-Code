@@ -24,19 +24,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.usfirst.frc4904.robot.Utils;
 
 public class ArmSubsystem extends SubsystemBase {
-    // TODO: get actual angles
-    public static final double HARD_STOP_ARM_ANGLE = -38;
-    public static final double HARD_STOP_BACK = 180 - HARD_STOP_ARM_ANGLE;
-
-    // TODO: get actual angles
-    public static final double INTAKE_ANGLE = -1;
-    public static final double OUTTAKE_ANGLE = -1;
-
-    // TODO: this is probably the wrong gearbox ratio
-    public static final double GEARBOX_RATIO = (double) (48 * 60) / 26;
-    public static final double DEGREES_PER_ROTATION = 360 / GEARBOX_RATIO;
-    // TODO: do something with this or remove it idk
-    public static final double GEARBOX_SLACK_DEGREES = 6;
 
     // TODO: get actual values (current values are from last year)
     public static final double kS = 0.10126;
@@ -47,6 +34,11 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kP = 0.06;
     public static final double kI = 0.02;
     public static final double kD = 0;
+    
+    private static final double DEGREES_PER_ROTATION = 0;
+
+    private static final double OUTTAKE_ANGLE = 0;
+    private static final double INTAKE_ANGLE = 0;
 
     public final CANTalonFX armMotor;
     public final ArmFeedforward feedforward;
@@ -62,11 +54,6 @@ public class ArmSubsystem extends SubsystemBase {
         // TODO: add angle offset
         return armEncoder.getAbsolutePosition() * 360;
     }
-
-    /**
-     * [p]
-     * Expects sensors to be zeroed at forward hard-stop.
-     */
 
     public static double motorRevsToAngle(double revs) {
         return revs * DEGREES_PER_ROTATION;

@@ -96,7 +96,8 @@ public void teleopInitialize() {
         RobotMap.Component.chassis.driveCommand(() -> driver.getY(), () -> driver.getX(), () -> driver.getTurnSpeed())
     );
     RobotMap.Component.arm.setDefaultCommand(
-        RobotMap.Component.arm.c_controlAngularVelocity(() -> joystick.getAxis(2) * 10)
+        RobotMap.Component.arm.c_controlAngularVelocity(() -> joystick.getAxis(2) * 30)
+        //FIXME: tune this speed and/or add multiple speed modes
     );
 
 }   
