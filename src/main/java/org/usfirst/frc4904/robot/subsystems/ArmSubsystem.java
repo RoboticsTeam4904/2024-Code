@@ -26,18 +26,18 @@ import org.usfirst.frc4904.robot.Utils;
 public class ArmSubsystem extends SubsystemBase {
     // TODO: get actual values
     public static final double kS = 0.00;
-    public static final double kV = 1.51;
-    public static final double kA = 0.05;
-    public static final double kG = 0.76;
+    public static final double kV = 2;
+    public static final double kA = 0.1;
+    public static final double kG = 0.3;
 
-    public static final double kP = 0.06;
-    public static final double kI = 0.02;
+    public static final double kP = 0.1;
+    public static final double kI = 0;
     public static final double kD = 0;
 
-    private static final double DEGREES_PER_ROTATION = 0;
-
-    private static final double OUTTAKE_ANGLE = 0;
+    private static final double OUTTAKE_ANGLE = 90;
     private static final double INTAKE_ANGLE = 0;
+
+    private static final double ARM_OFFSET = 186.14;
 
     public final CANTalonFX armMotor;
     public final ArmFeedforward feedforward;
@@ -45,21 +45,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmSubsystem(CANTalonFX armMotor, DutyCycleEncoder armEncoder) {
         this.armMotor = armMotor;
+        this.armMotor.setBrakeOnNeutral();
         this.feedforward = new ArmFeedforward(kG, kS, kV, kA);
         this.armEncoder = armEncoder;
     }
 
     public double getCurrentAngleDegrees() {
-        // TODO: add angle offset
-        return armEncoder.getAbsolutePosition() * 360;
-    }
-
-    public static double motorRevsToAngle(double revs) {
-        return revs * DEGREES_PER_ROTATION;
-    }
-
-    public static double angleToMotorRevs(double angle) {
-        return angle / DEGREES_PER_ROTATION;
+        return armEncoder.getAbsolutePosition() * 360 - ARM_OFFSET;
     }
 
     public Command c_controlAngularVelocity(DoubleSupplier degPerSecDealer) {

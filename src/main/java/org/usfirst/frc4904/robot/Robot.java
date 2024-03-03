@@ -30,7 +30,10 @@ public class Robot extends CommandRobotBase {
     private final Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
     private final CustomCommandJoystick joystick = new CustomCommandJoystick(0, 0.1);
+    // public double armJoystick(double input) {
 
+    //     return input*30 - Math.signum(input);
+    // }
     protected double scaleGain(double input, double gain, double exp) {
         return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
     }
@@ -54,9 +57,8 @@ public class Robot extends CommandRobotBase {
                 () -> driver.getTurnSpeed()
             )
         );
-
         RobotMap.Component.arm.setDefaultCommand(
-            RobotMap.Component.arm.c_controlAngularVelocity(() -> joystick.getAxis(2) * 30)
+            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30)
         );
     }
 
@@ -65,6 +67,9 @@ public class Robot extends CommandRobotBase {
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
+        SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
+        SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
+        // RobotMap.Component.armMotor.setVoltage(2);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.usfirst.frc4904.robot.humaninterface.operators;
 
 import org.usfirst.frc4904.robot.RobotMap;
+import org.usfirst.frc4904.standard.commands.CreateAndDisown;
 import org.usfirst.frc4904.standard.humaninput.Operator;
 
 // import org.usfirst.frc4904.robot.RobotMap;
@@ -21,11 +22,9 @@ public class DefaultOperator extends Operator {
     @Override
     public void bindCommands() {
         var joystick = RobotMap.HumanInput.Operator.joystick;
-
-        joystick.button1.onTrue(RobotMap.Component.arm.c_holdOuttakeAngle(200, 200, null));
-        joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());
-        joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());
-
+        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null));
+        // joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());
+        // joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());
         /*
         // manual extension and retraction
         joystick.button3.onTrue(RobotMap.Component.arm.armExtensionSubsystem.c_controlVelocity(() -> -0.45));

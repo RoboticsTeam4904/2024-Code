@@ -61,11 +61,7 @@ public class RobotMap {
         }
 
         public static class PWM {
-            public static final int ENCODER_FL = 0;
-            public static final int ENCODER_FR = 1;
-            public static final int ENCODER_BL = 2;
-            public static final int ENCODER_BR = 3;
-            public static final int ARM_ENCODER = 4;
+            public static final int ARM_ENCODER = 0;
         }
 
         public static class CAN {
@@ -206,11 +202,12 @@ public class RobotMap {
         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
-        Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);
-        Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);
-        Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
+        // Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);
+        // Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);
+        // Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
+        HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
     }
 }
