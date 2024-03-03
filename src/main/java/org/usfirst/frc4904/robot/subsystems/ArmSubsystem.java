@@ -24,8 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.usfirst.frc4904.robot.Utils;
 
 public class ArmSubsystem extends SubsystemBase {
-
-    // TODO: get actual values (current values are from last year)
+    // TODO: get actual values
     public static final double kS = 0.00;
     public static final double kV = 1.51;
     public static final double kA = 0.05;
@@ -34,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kP = 0.06;
     public static final double kI = 0.02;
     public static final double kD = 0;
-    
+
     private static final double DEGREES_PER_ROTATION = 0;
 
     private static final double OUTTAKE_ANGLE = 0;
@@ -72,9 +71,8 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("feedforward", ff);
             this.armMotor.setVoltage(ff);
         });
-        
         cmd.setName("arm - c_controlAngularVelocity");
-        
+
         return cmd;
     }
 
@@ -158,8 +156,8 @@ public class ArmSubsystem extends SubsystemBase {
             },
             this
         );
-
         cmd.setName("arm - c_holdRotation");
+
         return cmd;
     }
 }
