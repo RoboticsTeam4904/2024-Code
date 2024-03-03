@@ -4,6 +4,8 @@ import org.usfirst.frc4904.robot.RobotMap;
 import org.usfirst.frc4904.standard.commands.CreateAndDisown;
 import org.usfirst.frc4904.standard.humaninput.Operator;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 // import org.usfirst.frc4904.robot.RobotMap;
 // import org.usfirst.frc4904.standard.commands.CreateAndDisown;
 // import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,7 +24,7 @@ public class DefaultOperator extends Operator {
     @Override
     public void bindCommands() {
         var joystick = RobotMap.HumanInput.Operator.joystick;
-        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null));
+        joystick.button1.onTrue(new InstantCommand(() -> RobotMap.Component.arm.setArmAngleDegrees(90)));
         // joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());
         // joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());
         /*

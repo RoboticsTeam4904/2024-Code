@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static org.usfirst.frc4904.robot.Utils.nameCommand;
 
@@ -58,7 +59,7 @@ public class Robot extends CommandRobotBase {
             )
         );
         RobotMap.Component.arm.setDefaultCommand(
-            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30)
+            new RunCommand(() -> RobotMap.Component.arm.setVelocity(RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30))
         );
     }
 
