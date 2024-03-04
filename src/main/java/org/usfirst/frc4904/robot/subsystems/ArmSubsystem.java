@@ -26,9 +26,9 @@ import org.usfirst.frc4904.robot.Utils;
 public class ArmSubsystem extends SubsystemBase {
     // TODO: get actual values
     public static final double kS = 0.00;
-    public static final double kV = 2;
-    public static final double kA = 0.1;
-    public static final double kG = 0.3;
+    public static final double kV = 1.3716;
+    public static final double kA = 0.0299;
+    public static final double kG = 0.4126;
 
     public static final double kP = 0.1;
     public static final double kI = 0;
