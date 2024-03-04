@@ -95,7 +95,8 @@ public class Robot extends CommandRobotBase {
             RobotMap.Component.chassis.getAutonomousCommand("start-amp", true),
             RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
             new WaitCommand(1),
-            RobotMap.Component.chassis.getAutonomousCommand("amp-source", true)
+            RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", true),
+            RobotMap.Component.chassis.getAutonomousCommand("amp-return_start", true)
         );
         command.schedule();
         
