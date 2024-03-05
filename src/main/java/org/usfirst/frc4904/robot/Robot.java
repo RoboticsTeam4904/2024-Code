@@ -73,7 +73,7 @@ public class Robot extends CommandRobotBase {
             )
         );
         RobotMap.Component.arm.setDefaultCommand(
-            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30)
+            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120)
         );
     }
 
@@ -95,8 +95,8 @@ public class Robot extends CommandRobotBase {
             RobotMap.Component.chassis.getAutonomousCommand("start-amp", true),
             RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
             new WaitCommand(1),
-            RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", true),
-            RobotMap.Component.chassis.getAutonomousCommand("amp-return_start", true)
+            RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+            RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
         );
         command.schedule();
         

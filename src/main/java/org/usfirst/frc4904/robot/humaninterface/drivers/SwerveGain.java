@@ -5,7 +5,7 @@ import org.usfirst.frc4904.robot.RobotMap;
 
 public class SwerveGain extends Driver {
     // TODO: tune
-    double SPEED_EXP = 2;
+    double SPEED_EXP = 3;
     double TURN_EXP = 2;
 
     static boolean button1 = false;
