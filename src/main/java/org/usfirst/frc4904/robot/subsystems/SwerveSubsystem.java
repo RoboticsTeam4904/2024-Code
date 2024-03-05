@@ -92,7 +92,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
         setupPathPlanner();
     }
-
     /**
      * Setup AutoBuilder for PathPlanner.
      */

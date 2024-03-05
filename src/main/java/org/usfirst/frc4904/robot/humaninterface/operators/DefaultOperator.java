@@ -5,6 +5,7 @@ import org.usfirst.frc4904.standard.commands.CreateAndDisown;
 import org.usfirst.frc4904.standard.humaninput.Operator;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 // import org.usfirst.frc4904.robot.RobotMap;
 // import org.usfirst.frc4904.standard.commands.CreateAndDisown;
@@ -24,36 +25,36 @@ public class DefaultOperator extends Operator {
     @Override
     public void bindCommands() {
         var joystick = RobotMap.HumanInput.Operator.joystick;
-        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null));
+        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(150, 150, null));
 
-        //SYSID tuning
+        // //SYSID tuning
         
-        joystick.button2.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(.25)));
-        joystick.button2.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
-        joystick.button4.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-.25)));
-        joystick.button4.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button4.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(.25)));
+        // joystick.button4.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button6.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-.25)));
+        // joystick.button6.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
         
         
-        joystick.button5.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(.5)));
-        joystick.button5.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
-        joystick.button3.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-.5)));
-        joystick.button3.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(.5)));
+        // joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-.5)));
+        // joystick.button3.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
 
         
-        joystick.button7.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(1)));
-        joystick.button7.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
-        joystick.button8.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-1)));
-        joystick.button8.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button7.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(1)));
+        // joystick.button7.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button8.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-1)));
+        // joystick.button8.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
 
-        joystick.button9.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(2)));
-        joystick.button9.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
-        joystick.button10.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-2)));
-        joystick.button10.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button9.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(2)));
+        // joystick.button9.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button10.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-2)));
+        // joystick.button10.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
 
-        joystick.button11.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(4)));
-        joystick.button11.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
-        joystick.button12.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-4)));
-        joystick.button12.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button11.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(4)));
+        // joystick.button11.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
+        // joystick.button12.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-4)));
+        // joystick.button12.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));
         // joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());
         // joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());
         /*

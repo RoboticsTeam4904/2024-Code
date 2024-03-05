@@ -92,11 +92,11 @@ public class Robot extends CommandRobotBase {
         //TODO create paths
         var command = new SequentialCommandGroup(
             new WaitCommand(delaySlider.getDouble(0)),
-            RobotMap.Component.chassis.getAutonomousCommand("start-amp", true),
-            RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
-            new WaitCommand(1),
-            RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
-            RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
+            RobotMap.Component.chassis.getAutonomousCommand("auton", true)
+            // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
+            // new WaitCommand(1),
+            // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+            // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
         );
         command.schedule();
         

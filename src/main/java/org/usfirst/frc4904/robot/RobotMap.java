@@ -1,7 +1,7 @@
 package org.usfirst.frc4904.robot;
 
 import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
-import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
+// import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;
@@ -9,7 +9,7 @@ import org.usfirst.frc4904.standard.custom.motorcontrollers.CANTalonFX;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
-
+import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkMax;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -161,7 +161,7 @@ public class RobotMap {
         public static CANTalonFX armMotor;
         public static DutyCycleEncoder armEncoder;
         public static ArmSubsystem arm;
-        public static ClimberSubsystem climber;
+        // public static ClimberSubsystem climber;
         public static CANSparkMax climberLeft;
         public static CANSparkMax climberRight;
     }
@@ -202,6 +202,7 @@ public class RobotMap {
         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
+        NamedCommands.registerCommand("armUp", Component.arm.c_holdOuttakeAngle(75, 75, null));
         // Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);
         // Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);
         // Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);

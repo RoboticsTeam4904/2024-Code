@@ -30,11 +30,11 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kA = 0.0299;
     public static final double kG = 0.4126;
 
-    public static final double kP = 0.1;
-    public static final double kI = 0;
+    public static final double kP = 0.07;
+    public static final double kI = 0.03;
     public static final double kD = 0;
 
-    private static final double OUTTAKE_ANGLE = 90;
+    private static final double OUTTAKE_ANGLE = 120;
     private static final double INTAKE_ANGLE = 0;
 
     private static final double ARM_OFFSET = 186.14;
