@@ -48,7 +48,13 @@ public class Robot extends CommandRobotBase {
     }
     protected double nudge(double angle) {
         if (angle > 90) {
+            if (angle > 120 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
+                return -.0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
+            }
             return -.0001;
+        }
+        if (angle < 60) {
+            return (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) + .0001;
         }
         return .0001;
     }
