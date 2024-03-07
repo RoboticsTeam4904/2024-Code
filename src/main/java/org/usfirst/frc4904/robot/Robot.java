@@ -53,8 +53,8 @@ public class Robot extends CommandRobotBase {
             }
             return -.0001;
         }
-        if (angle < 60) {
-            return (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) + .0001;
+        if (angle < 60 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
+            return .0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
         }
         return .0001;
     }
