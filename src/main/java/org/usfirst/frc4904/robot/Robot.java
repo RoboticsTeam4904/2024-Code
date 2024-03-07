@@ -46,6 +46,12 @@ public class Robot extends CommandRobotBase {
     protected double scaleGain(double input, double gain, double exp) {
         return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
     }
+    protected double nudge(double angle) {
+        if (angle > 90) {
+            return -.0001;
+        }
+        return .0001;
+    }
 
     public Robot() {
         super();
@@ -73,7 +79,7 @@ public class Robot extends CommandRobotBase {
             )
         );
         RobotMap.Component.arm.setDefaultCommand(
-            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 - .001)
+            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 + nudge(RobotMap.Component.arm.getCurrentAngleDegrees()))
         );
     }
 
