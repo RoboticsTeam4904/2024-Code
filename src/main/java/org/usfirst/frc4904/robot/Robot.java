@@ -73,7 +73,7 @@ public class Robot extends CommandRobotBase {
             )
         );
         RobotMap.Component.arm.setDefaultCommand(
-            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120)
+            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 - .001)
         );
     }
 

@@ -31,8 +31,10 @@ public class ArmSubsystem extends SubsystemBase {
     // public static final double kG = 0.4126;
     public static final double kS = 0.00;
     public static final double kV = 1.4555;
-    public static final double kA = 0.0513144;
-    public static final double kG = 0.33539;
+    public static final double kA = 0.0513;
+    public static final double kG = 0.3359;
+    // public static final double kG = .5;
+
 
     public static final double kP = 0.07;
     public static final double kI = 0.03;
@@ -55,7 +57,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getCurrentAngleDegrees() {
-        return armEncoder.getAbsolutePosition() * 360 - ARM_OFFSET;
+        var thing = armEncoder.getAbsolutePosition() * 360 - ARM_OFFSET;
+        if (thing < 0) {
+            return thing+360;
+        }
+        return thing;
     }
 
     public Command c_controlAngularVelocity(DoubleSupplier degPerSecDealer) {

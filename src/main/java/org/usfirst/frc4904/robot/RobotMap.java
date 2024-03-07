@@ -1,6 +1,7 @@
 package org.usfirst.frc4904.robot;
 
 import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 // import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
@@ -161,7 +162,7 @@ public class RobotMap {
         public static CANTalonFX armMotor;
         public static DutyCycleEncoder armEncoder;
         public static ArmSubsystem arm;
-        // public static ClimberSubsystem climber;
+        public static ClimberSubsystem climber;
         public static CANSparkMax climberLeft;
         public static CANSparkMax climberRight;
     }
@@ -203,9 +204,9 @@ public class RobotMap {
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
         NamedCommands.registerCommand("armUp", Component.arm.c_holdOuttakeAngle(75, 75, null));
-        // Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);
-        // Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);
-        // Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
+        Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushless);
+        Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushless);
+        Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
