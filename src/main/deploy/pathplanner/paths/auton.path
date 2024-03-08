@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5928943538798765,
-        "y": 6.911245275482004
+        "x": 1.5705110113923932,
+        "y": 7.45161113933339
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5928943538798745,
-        "y": 6.911245275482004
+        "x": 2.570511011392391,
+        "y": 7.45161113933339
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.750615643676379,
-        "y": 7.320540680963641
+        "x": 2.7738760477520956,
+        "y": 7.630476885953772
       },
       "prevControl": {
-        "x": 2.8851562663901014,
-        "y": 7.2710090441510795
+        "x": 2.908416670465818,
+        "y": 7.580945249141211
       },
       "nextControl": {
-        "x": 2.616075020962657,
-        "y": 7.370072317776203
+        "x": 2.6393354250383734,
+        "y": 7.680008522766334
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.87,
-        "y": 7.75
+        "x": 1.7716458997732811,
+        "y": 7.630476885953772
       },
       "prevControl": {
-        "x": 2.1695164949866808,
-        "y": 7.75
+        "x": 2.0711623947599627,
+        "y": 7.630476885953772
       },
       "nextControl": {
-        "x": 1.4600369017290082,
-        "y": 7.75
+        "x": 1.3616828015022893,
+        "y": 7.630476885953772
       },
       "isLocked": false,
       "linkedName": null
@@ -75,29 +75,24 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "armUp",
-      "waypointRelativePos": 1.6,
+      "name": "wait",
+      "waypointRelativePos": 2.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
+              }
+            },
             {
               "type": "named",
               "data": {
                 "name": "armUp"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "wait",
-      "waypointRelativePos": 2.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "wait",
               "data": {
