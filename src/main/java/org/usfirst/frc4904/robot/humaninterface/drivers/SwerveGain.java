@@ -26,7 +26,7 @@ public class SwerveGain extends Driver {
             new InstantCommand(() -> RobotMap.Component.chassis.brickMode())
         );
 
-        xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed(50, 50, null)      
+        xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed()      
         );
 
         xyJoystick.button1.onTrue(

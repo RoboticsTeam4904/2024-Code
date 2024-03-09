@@ -90,9 +90,6 @@ public class ArmSubsystem extends SubsystemBase {
         return c_holdRotation(INTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer);
     }
     public Command scuffed(
-        double maxVelDegPerSec,
-        double maxAccelDegPerSecSquare,
-        Supplier<Command> onArrivalCommandDealer
     ) {
         return new ParallelRaceGroup((new RunCommand(() -> armMotor.setVoltage(3))), new WaitUntilCommand((() -> getCurrentAngleDegrees() > 89))).andThen(new RunCommand(() -> armMotor.setVoltage(0)));
             

@@ -26,7 +26,7 @@ public class DefaultOperator extends Operator {
     @Override
     public void bindCommands() {
         var joystick = RobotMap.HumanInput.Operator.joystick;
-        joystick.button1.whileTrue(RobotMap.Component.arm.scuffed(50, 50, null));
+        joystick.button1.whileTrue(RobotMap.Component.arm.scuffed());
         joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(2)));
         joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(2)));
 

@@ -96,17 +96,18 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void autonomousInitialize() {
-        // RobotMap.Component.chassis.zeroGyro();
-        // //TODO create paths
-        // var command = new SequentialCommandGroup(
-        //     new WaitCommand(0),
-        //     RobotMap.Component.chassis.getAutonomousCommand("line2", true)
-        //     // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
-        //     // new WaitCommand(1),
-        //     // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
-        //     // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
-        // );
-        // command.schedule();
+        // RobotMap.Component.chassis.zeroGyro(); //TODO: TEST????
+        //TODO create paths
+        var command = new SequentialCommandGroup(
+            new WaitCommand(0),
+            // RobotMap.Component.chassis.getAutonomousCommand("line2", true)
+            RobotMap.Component.chassis.getAutonomousCommand("simple", true)
+            // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
+            // new WaitCommand(1),
+            // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+            // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
+        );
+        command.schedule();
         
     }
 
@@ -121,7 +122,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void testInitialize() {
-        RobotMap.Component.arm.scuffed(50, 50, null).schedule();
+        RobotMap.Component.arm.scuffed().schedule();
     }
 
     @Override
