@@ -9,6 +9,7 @@ import org.usfirst.frc4904.standard.humaninput.Operator;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -65,6 +66,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void initialize() {
+        CameraServer.startAutomaticCapture();
     }
 
     @Override
@@ -100,12 +102,13 @@ public class Robot extends CommandRobotBase {
         // //TODO create paths
         // var command = new SequentialCommandGroup(
         //     new WaitCommand(0),
-        //     RobotMap.Component.chassis.getAutonomousCommand("line2", true)
         //     // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
         //     // new WaitCommand(1),
-        //     // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+        //     // RobotMa+p.Component.chassis.getAutonomousCommand("amp-leave_start", false),
         //     // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
         // );
+        RobotMap.Component.chassis.getAutonomousCommand("line3", true).schedule();
+
         // command.schedule();
         
     }
@@ -121,7 +124,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void testInitialize() {
-        RobotMap.Component.arm.scuffed(50, 50, null).schedule();
+        //RobotMap.Component.arm.scuffed(50, 50, null).schedule();
     }
 
     @Override
