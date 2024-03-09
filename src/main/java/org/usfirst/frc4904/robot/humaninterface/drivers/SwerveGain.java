@@ -21,12 +21,14 @@ public class SwerveGain extends Driver {
     public void bindCommands() {
         var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;
         var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;
+
         turnJoystick.button1.onTrue(
             new InstantCommand(() -> RobotMap.Component.chassis.brickMode())
         );
-        turnJoystick.button2.onTrue(
-            new InstantCommand(() -> RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null))
+
+        xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed(50, 50, null)      
         );
+
         xyJoystick.button1.onTrue(
             new InstantCommand(() -> RobotMap.Component.chassis.zeroGyro())
         );

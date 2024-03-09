@@ -199,7 +199,7 @@ public class RobotMap {
     }
 
     public RobotMap() {
-        Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 6);
+        Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);

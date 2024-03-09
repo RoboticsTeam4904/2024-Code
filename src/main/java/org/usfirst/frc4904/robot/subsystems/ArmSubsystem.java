@@ -7,7 +7,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc4904.standard.commands.CreateAndDisown;
-
+import org.usfirst.frc4904.standard.commands.WaitUntil;
 import org.usfirst.frc4904.standard.custom.motioncontrollers.ezControl;
 import org.usfirst.frc4904.standard.custom.motioncontrollers.ezMotion;
 import org.usfirst.frc4904.standard.custom.motorcontrollers.CANTalonFX;
@@ -17,9 +17,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import org.usfirst.frc4904.robot.Utils;
 
@@ -32,15 +36,15 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kS = 0.00;
     public static final double kV = 1.4555;
     public static final double kA = 0.0513;
-    public static final double kG = 0.3359;
-    // public static final double kG = .5;
+    public static final double kG = 0.225;
+    // public static finl double kG = .5;
 
 
     public static final double kP = 0.07;
     public static final double kI = 0.03;
     public static final double kD = 0;
 
-    private static final double OUTTAKE_ANGLE = 120;
+    private static final double OUTTAKE_ANGLE = 110;
     private static final double INTAKE_ANGLE = 0;
 
     private static final double ARM_OFFSET = 186.14;
@@ -85,7 +89,20 @@ public class ArmSubsystem extends SubsystemBase {
     ) {
         return c_holdRotation(INTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer);
     }
-
+    public Command scuffed(
+        double maxVelDegPerSec,
+        double maxAccelDegPerSecSquare,
+        Supplier<Command> onArrivalCommandDealer
+    ) {
+        return new ParallelRaceGroup((new RunCommand(() -> armMotor.setVoltage(3))), new WaitUntilCommand((() -> getCurrentAngleDegrees() > 89))).andThen(new RunCommand(() -> armMotor.setVoltage(0)));
+            
+        }
+        //  return new WaitCommand(3)
+        //  .andThen(c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer))
+        //  .andThen(new WaitCommand(3))
+        //  .andThen(c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer));
+        //  return c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, () -> c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer));
+    
     public Command c_holdOuttakeAngle(
         double maxVelDegPerSec,
         double maxAccelDegPerSecSquare,

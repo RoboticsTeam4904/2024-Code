@@ -48,12 +48,12 @@ public class Robot extends CommandRobotBase {
     }
     protected double nudge(double angle) {
         if (angle > 90) {
-            if (angle > 120 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
+            if (angle > 110 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
                 return -.0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
             }
             return -.0001;
         }
-        if (angle < 60 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
+        if (angle < 1 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
             return .0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
         }
         return .0001;
@@ -65,11 +65,6 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void initialize() {
-        delaySlider = Shuffleboard.getTab("Autonomous")
-            .add("Delay", 0) // Default value is 0
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 10)) // Set the min and max values for the slider
-            .getEntry();
     }
 
     @Override
@@ -101,16 +96,17 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void autonomousInitialize() {
-        //TODO create paths
-        var command = new SequentialCommandGroup(
-            new WaitCommand(delaySlider.getDouble(0)),
-            RobotMap.Component.chassis.getAutonomousCommand("auton", true)
-            // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
-            // new WaitCommand(1),
-            // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
-            // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
-        );
-        command.schedule();
+        // RobotMap.Component.chassis.zeroGyro();
+        // //TODO create paths
+        // var command = new SequentialCommandGroup(
+        //     new WaitCommand(0),
+        //     RobotMap.Component.chassis.getAutonomousCommand("line2", true)
+        //     // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
+        //     // new WaitCommand(1),
+        //     // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+        //     // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
+        // );
+        // command.schedule();
         
     }
 
@@ -124,7 +120,9 @@ public class Robot extends CommandRobotBase {
     public void disabledExecute() {}
 
     @Override
-    public void testInitialize() {}
+    public void testInitialize() {
+        RobotMap.Component.arm.scuffed(50, 50, null).schedule();
+    }
 
     @Override
     public void testExecute() {}
