@@ -11,9 +11,15 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -24,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -37,6 +45,11 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -56,6 +69,20 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public final SwerveDrive swerveDrive;
   /**
+   * Photonvision pose estimator
+   */
+  public final PhotonPoseEstimator photonPoseEstimator;
+  /**
+   * Phtonvision camera
+   */
+  public final PhotonCamera photonCamera;
+  public final Transform3d robotToCamera;
+  /**
+   * layout of the apriltags on the field
+   */
+  public final AprilTagFieldLayout aprilTagFieldLayout;
+
+  /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
   private final double maximumSpeed;
@@ -65,7 +92,7 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @param directory Directory of swerve drive config files.
    */
-  public SwerveSubsystem(File directory, double anglefactor, double drivefactor, double maxspeed)
+  public SwerveSubsystem(File directory, double anglefactor, double drivefactor, double maxspeed) throws IOException
   {
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
@@ -73,6 +100,12 @@ public class SwerveSubsystem extends SubsystemBase
     this.angleConversionFactor = anglefactor;
     this.driveConversionFactor = drivefactor;
     this.maximumSpeed = maxspeed;
+
+    // Vision stuff
+    this.aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2024-crescendo.json");
+    this.photonCamera =  new PhotonCamera("placeholder"); //TODO: replace with actual camera name and add as many cameras as we need
+    this.robotToCamera = new Transform3d(new Translation3d(-1, -1, -1), new Rotation3d(-1,-1,-1)); //TODO: stores the camera position relative to the robot
+    this.photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCamera,robotToCamera);
 
     // Motor conversion factor is (PI * WHEEL DIAMETER IN METERS) / (GEAR RATIO * ENCODER RESOLUTION).
     //  In this case the wheel diameter is 4 inches, which must be converted to meters to get meters/second.
@@ -493,6 +526,24 @@ public class SwerveSubsystem extends SubsystemBase
   public void addFakeVisionReading()
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+
+  // public Optional<EstimatedRobotPose> updateVisionEstimate()
+  // {
+  //   return photonPoseEstimator.update();
+  // }
+
+  /**
+   * @param estimatedRobotPose result from updateVisionEstimate()
+   */
+  public void addVisionMeasurement()
+  {
+    Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update();
+    if (estimatedRobotPose.isEmpty()){
+      return;
+    }
+    swerveDrive.addVisionMeasurement(estimatedRobotPose.get().estimatedPose.toPose2d(), estimatedRobotPose.get().timestampSeconds);
   }
 
   public void brickMode(){
