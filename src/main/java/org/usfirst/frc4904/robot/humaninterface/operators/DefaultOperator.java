@@ -26,19 +26,32 @@ public class DefaultOperator extends Operator {
     @Override
     public void bindCommands() {
         var joystick = RobotMap.HumanInput.Operator.joystick;
-        joystick.button1.whileTrue(RobotMap.Component.arm.scuffed(50, 50, null));
-        joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(2)));
-        joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(2)));
+        joystick.button1.whileTrue(RobotMap.Component.arm.scuffed());
+
+        joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(6)));
+        joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(6)));
 
         joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
         joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
 
 
-        joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(-2)));
-        joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(-2)));
+        joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(-6)));
+        joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(-6)));
 
         joystick.button3.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
         joystick.button3.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
+
+        joystick.button7.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(6)));
+        joystick.button7.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
+
+        joystick.button9.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(-6)));
+        joystick.button9.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
+
+        joystick.button8.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(6)));
+        joystick.button8.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
+
+        joystick.button10.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(-6)));
+        joystick.button10.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
 
 
         // //SYSID tuning

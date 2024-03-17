@@ -75,7 +75,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "wait",
+      "name": "wait and arm",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "sequential",

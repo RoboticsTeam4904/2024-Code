@@ -5,7 +5,7 @@ import org.usfirst.frc4904.robot.RobotMap;
 
 public class SwerveGain extends Driver {
     // TODO: tune
-    double SPEED_EXP = 3;
+    double SPEED_EXP = 2;
     double TURN_EXP = 2;
 
     static boolean button1 = false;
@@ -26,7 +26,11 @@ public class SwerveGain extends Driver {
             new InstantCommand(() -> RobotMap.Component.chassis.brickMode())
         );
 
-        xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed(50, 50, null)      
+        turnJoystick.button2.onTrue(
+            new InstantCommand(() -> RobotMap.Component.chassis.brickMode())
+        );
+
+        xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed()      
         );
 
         xyJoystick.button1.onTrue(

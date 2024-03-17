@@ -11,6 +11,7 @@ import org.usfirst.frc4904.standard.custom.motorcontrollers.CANTalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.CANSparkMax;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -36,6 +37,7 @@ import org.usfirst.frc4904.standard.subsystems.motor.SparkMaxMotorSubsystem;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotMap {
     public static class Port {
@@ -199,11 +201,11 @@ public class RobotMap {
     }
 
     public RobotMap() {
-        Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
+        Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 6);
         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
-        NamedCommands.registerCommand("armUp", Component.arm.c_holdOuttakeAngle(75, 75, null));
+        NamedCommands.registerCommand("armUp", Component.arm.scuffed());
         Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushless);
         Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushless);
         Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
@@ -212,4 +214,9 @@ public class RobotMap {
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
         HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
     }
+
+    public static Command getAutonomousCommand() {
+        return new PathPlannerAuto("autoBlue");
+    }
+
 }

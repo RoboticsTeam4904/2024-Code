@@ -44,10 +44,11 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kI = 0.03;
     public static final double kD = 0;
 
-    private static final double OUTTAKE_ANGLE = 110;
+    private static final double OUTTAKE_ANGLE = 90;
     private static final double INTAKE_ANGLE = 0;
 
-    private static final double ARM_OFFSET = 186.14;
+    //TODO: this number has been wrong, make sure it is correct before comps 
+    private static final double ARM_OFFSET = 185.7;
 
     public final CANTalonFX armMotor;
     public final ArmFeedforward feedforward;
@@ -63,7 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double getCurrentAngleDegrees() {
         var thing = armEncoder.getAbsolutePosition() * 360 - ARM_OFFSET;
         if (thing < 0) {
-            return thing+360;
+            return thing + 360;
         }
         return thing;
     }
@@ -90,19 +91,22 @@ public class ArmSubsystem extends SubsystemBase {
         return c_holdRotation(INTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer);
     }
     public Command scuffed(
-        double maxVelDegPerSec,
-        double maxAccelDegPerSecSquare,
-        Supplier<Command> onArrivalCommandDealer
     ) {
-        return new ParallelRaceGroup((new RunCommand(() -> armMotor.setVoltage(3))), new WaitUntilCommand((() -> getCurrentAngleDegrees() > 89))).andThen(new RunCommand(() -> armMotor.setVoltage(0)));
-            
+        var cmd = new ParallelRaceGroup((new RunCommand(() -> armMotor.setVoltage(3))), new WaitUntilCommand((() -> (getCurrentAngleDegrees() > 89 && getCurrentAngleDegrees() < 180)))).andThen(new RunCommand(() -> armMotor.setVoltage(0)));
+        cmd.addRequirements();
+        return cmd;
         }
         //  return new WaitCommand(3)
         //  .andThen(c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer))
         //  .andThen(new WaitCommand(3))
         //  .andThen(c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer));
         //  return c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, () -> c_holdRotation(OUTTAKE_ANGLE, maxVelDegPerSec, maxAccelDegPerSecSquare, onArrivalCommandDealer));
-    
+    public Command scuffedback(
+
+    ) {
+        return new ParallelRaceGroup((new RunCommand(() -> armMotor.setVoltage(-3))), new WaitUntilCommand((() -> getCurrentAngleDegrees() < 50))).andThen(new RunCommand(() -> armMotor.setVoltage(0)));
+            
+        }
     public Command c_holdOuttakeAngle(
         double maxVelDegPerSec,
         double maxAccelDegPerSecSquare,
