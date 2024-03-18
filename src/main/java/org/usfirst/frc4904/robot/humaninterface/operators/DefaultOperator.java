@@ -31,6 +31,7 @@ public class DefaultOperator extends Operator {
         joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(6)));
         joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(6)));
 
+
         joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
         joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
 
