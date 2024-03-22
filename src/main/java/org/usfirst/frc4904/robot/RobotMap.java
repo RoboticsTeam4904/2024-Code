@@ -206,6 +206,7 @@ public class RobotMap {
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
         NamedCommands.registerCommand("armUp", Component.arm.scuffed());
+        NamedCommands.registerCommand("armDown", Component.arm.scuffedback());
         Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushless);
         Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushless);
         Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);

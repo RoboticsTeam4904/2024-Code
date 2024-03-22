@@ -135,7 +135,11 @@ public class SwerveSubsystem extends SubsystemBase {
                 // controls when path is mirrored for red alliance
                 // TODO: Blue alliance should be red alliance but fixed it badly pls change
                 var alliance = DriverStation.getAlliance();
-                return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue;
+                // return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue;
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                  }
+                  return false;    
             },
 
             // reference to this subsystem

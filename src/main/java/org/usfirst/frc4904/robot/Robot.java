@@ -166,6 +166,12 @@ public class Robot extends CommandRobotBase {
     public void testInitialize() {
         //RobotMap.Component.arm.scuffed(50, 50, null).schedule();
         // RobotMap.Component.chassis.setDefaultCommand(null);
+        SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
+        SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
+        SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
+        SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
+        SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
+
 
     }
 
