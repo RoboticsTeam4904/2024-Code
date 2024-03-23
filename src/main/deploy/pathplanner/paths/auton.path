@@ -1,0 +1,125 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.5275761060812059,
+        "y": 7.427679234984107
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4363016249992668,
+        "y": 7.760409715232205
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8365530249609698,
+        "y": 7.835352990146432
+      },
+      "prevControl": {
+        "x": 1.5370627170781532,
+        "y": 7.839313577648578
+      },
+      "nextControl": {
+        "x": 2.1419074967810263,
+        "y": 7.831314852440526
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4437582902974264,
+        "y": 7.599893931265351
+      },
+      "prevControl": {
+        "x": 2.348899030374548,
+        "y": 7.704739334688293
+      },
+      "nextControl": {
+        "x": 2.5386175502203048,
+        "y": 7.495048527842409
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7859976973515211,
+        "y": 7.320540680963641
+      },
+      "prevControl": {
+        "x": 2.0362240955031483,
+        "y": 7.320540680963641
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 90.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 90.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "wait and arm",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "armUp"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 291.52,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 89.89846479390157,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

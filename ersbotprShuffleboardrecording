@@ -1,0 +1,272 @@
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/Robot.java b/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[1mindex eaec5f6..a308fb8 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/Robot.java[m
+[36m@@ -92,11 +92,11 @@[m [mpublic class Robot extends CommandRobotBase {[m
+         //TODO create paths[m
+         var command = new SequentialCommandGroup([m
+             new WaitCommand(delaySlider.getDouble(0)),[m
+[31m-            RobotMap.Component.chassis.getAutonomousCommand("start-amp", true),[m
+[31m-            RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),[m
+[31m-            new WaitCommand(1),[m
+[31m-            RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),[m
+[31m-            RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)[m
+[32m+[m[32m            RobotMap.Component.chassis.getAutonomousCommand("auton", true)[m
+[32m+[m[32m            // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),[m
+[32m+[m[32m            // new WaitCommand(1),[m
+[32m+[m[32m            // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),[m
+[32m+[m[32m            // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)[m
+         );[m
+         command.schedule();[m
+         [m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/RobotMap.java b/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[1mindex 0b5ff0a..572d2c3 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/RobotMap.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package org.usfirst.frc4904.robot;[m
+ [m
+ import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;[m
+[31m-import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;[m
+[32m+[m[32m// import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;[m
+ import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;[m
+ import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;[m
+ import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;[m
+[36m@@ -9,7 +9,7 @@[m [mimport org.usfirst.frc4904.standard.custom.motorcontrollers.CANTalonFX;[m
+ [m
+ import com.ctre.phoenix6.signals.NeutralModeValue;[m
+ import com.kauailabs.navx.frc.AHRS;[m
+[31m-[m
+[32m+[m[32mimport com.pathplanner.lib.auto.NamedCommands;[m
+ import com.revrobotics.CANSparkMax;[m
+ [m
+ import com.revrobotics.CANSparkLowLevel.MotorType;[m
+[36m@@ -161,7 +161,7 @@[m [mpublic class RobotMap {[m
+         public static CANTalonFX armMotor;[m
+         public static DutyCycleEncoder armEncoder;[m
+         public static ArmSubsystem arm;[m
+[31m-        public static ClimberSubsystem climber;[m
+[32m+[m[32m        // public static ClimberSubsystem climber;[m
+         public static CANSparkMax climberLeft;[m
+         public static CANSparkMax climberRight;[m
+     }[m
+[36m@@ -202,6 +202,7 @@[m [mpublic class RobotMap {[m
+         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);[m
+         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port[m
+         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);[m
+[32m+[m[32m        NamedCommands.registerCommand("armUp", Component.arm.c_holdOuttakeAngle(75, 75, null));[m
+         // Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushed);[m
+         // Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushed);[m
+         // Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/humaninterface/drivers/SwerveGain.java b/src/main/java/org/usfirst/frc4904/robot/humaninterface/drivers/SwerveGain.java[m
+[1mindex a20ef4f..38d0854 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/humaninterface/drivers/SwerveGain.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/humaninterface/drivers/SwerveGain.java[m
+[36m@@ -19,9 +19,17 @@[m [mpublic class SwerveGain extends Driver {[m
+     }[m
+ [m
+     public void bindCommands() {[m
+[31m-        RobotMap.HumanInput.Driver.turnJoystick.button1.onTrue([m
+[32m+[m[32m        var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;[m
+[32m+[m[32m        var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;[m
+[32m+[m[32m        turnJoystick.button1.onTrue([m
+             new InstantCommand(() -> RobotMap.Component.chassis.brickMode())[m
+         );[m
+[32m+[m[32m        turnJoystick.button2.onTrue([m
+[32m+[m[32m            new InstantCommand(() -> RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null))[m
+[32m+[m[32m        );[m
+[32m+[m[32m        xyJoystick.button1.onTrue([m
+[32m+[m[32m            new InstantCommand(() -> RobotMap.Component.chassis.zeroGyro())[m
+[32m+[m[32m        );[m
+     }[m
+ [m
+     public double getX() {[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java b/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[1mindex c390b0a..fd66a57 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/humaninterface/operators/DefaultOperator.java[m
+[36m@@ -5,6 +5,7 @@[m [mimport org.usfirst.frc4904.standard.commands.CreateAndDisown;[m
+ import org.usfirst.frc4904.standard.humaninput.Operator;[m
+ [m
+ import edu.wpi.first.wpilibj2.command.InstantCommand;[m
+[32m+[m[32mimport edu.wpi.first.wpilibj2.command.RunCommand;[m
+ [m
+ // import org.usfirst.frc4904.robot.RobotMap;[m
+ // import org.usfirst.frc4904.standard.commands.CreateAndDisown;[m
+[36m@@ -24,36 +25,36 @@[m [mpublic class DefaultOperator extends Operator {[m
+     @Override[m
+     public void bindCommands() {[m
+         var joystick = RobotMap.HumanInput.Operator.joystick;[m
+[31m-        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(75, 75, null));[m
+[32m+[m[32m        joystick.button1.whileTrue(RobotMap.Component.arm.c_holdOuttakeAngle(150, 150, null));[m
+ [m
+[31m-        //SYSID tuning[m
+[32m+[m[32m        // //SYSID tuning[m
+         [m
+[31m-        joystick.button2.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(.25)));[m
+[31m-        joystick.button2.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-        joystick.button4.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-.25)));[m
+[31m-        joystick.button4.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button4.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(.25)));[m
+[32m+[m[32m        // joystick.button4.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button6.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-.25)));[m
+[32m+[m[32m        // joystick.button6.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+         [m
+         [m
+[31m-        joystick.button5.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(.5)));[m
+[31m-        joystick.button5.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-        joystick.button3.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-.5)));[m
+[31m-        joystick.button3.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button5.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(.5)));[m
+[32m+[m[32m        // joystick.button5.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button3.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-.5)));[m
+[32m+[m[32m        // joystick.button3.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+ [m
+         [m
+[31m-        joystick.button7.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(1)));[m
+[31m-        joystick.button7.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-        joystick.button8.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-1)));[m
+[31m-        joystick.button8.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-[m
+[31m-        joystick.button9.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(2)));[m
+[31m-        joystick.button9.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-        joystick.button10.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-2)));[m
+[31m-        joystick.button10.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-[m
+[31m-        joystick.button11.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(4)));[m
+[31m-        joystick.button11.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[31m-        joystick.button12.onTrue(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(-4)));[m
+[31m-        joystick.button12.onFalse(new InstantCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button7.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(1)));[m
+[32m+[m[32m        // joystick.button7.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button8.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-1)));[m
+[32m+[m[32m        // joystick.button8.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m
+[32m+[m[32m        // joystick.button9.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(2)));[m
+[32m+[m[32m        // joystick.button9.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button10.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-2)));[m
+[32m+[m[32m        // joystick.button10.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m
+[32m+[m[32m        // joystick.button11.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(4)));[m
+[32m+[m[32m        // joystick.button11.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+[32m+[m[32m        // joystick.button12.whileTrue(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(-4)));[m
+[32m+[m[32m        // joystick.button12.whileFalse(new RunCommand(() -> RobotMap.Component.armMotor.setVoltage(0)));[m
+         // joystick.button5.onTrue(RobotMap.Component.climber.c_climberUp());[m
+         // joystick.button3.onTrue(RobotMap.Component.climber.c_climberDown());[m
+         /*[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/subsystems/ArmSubsystem.java b/src/main/java/org/usfirst/frc4904/robot/subsystems/ArmSubsystem.java[m
+[1mindex 247e58a..6565a02 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/subsystems/ArmSubsystem.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/subsystems/ArmSubsystem.java[m
+[36m@@ -30,11 +30,11 @@[m [mpublic class ArmSubsystem extends SubsystemBase {[m
+     public static final double kA = 0.0299;[m
+     public static final double kG = 0.4126;[m
+ [m
+[31m-    public static final double kP = 0.1;[m
+[31m-    public static final double kI = 0;[m
+[32m+[m[32m    public static final double kP = 0.07;[m
+[32m+[m[32m    public static final double kI = 0.03;[m
+     public static final double kD = 0;[m
+ [m
+[31m-    private static final double OUTTAKE_ANGLE = 90;[m
+[32m+[m[32m    private static final double OUTTAKE_ANGLE = 120;[m
+     private static final double INTAKE_ANGLE = 0;[m
+ [m
+     private static final double ARM_OFFSET = 186.14;[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/subsystems/ClimberSubsystem.java b/src/main/java/org/usfirst/frc4904/robot/subsystems/ClimberSubsystem.java[m
+[1mindex 2c627f5..47c25bb 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/subsystems/ClimberSubsystem.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/subsystems/ClimberSubsystem.java[m
+[36m@@ -1,40 +1,40 @@[m
+[31m-package org.usfirst.frc4904.robot.subsystems;[m
+[31m-[m
+[31m-import com.revrobotics.CANSparkMax;[m
+[31m-import com.revrobotics.CANSparkBase.IdleMode;[m
+[31m-[m
+[31m-import edu.wpi.first.wpilibj2.command.Command;[m
+[31m-import edu.wpi.first.wpilibj2.command.SubsystemBase;[m
+[31m-[m
+[31m-public class ClimberSubsystem extends SubsystemBase {[m
+[31m-    public final CANSparkMax motorLeft;[m
+[31m-    public final CANSparkMax motorRight;[m
+[31m-[m
+[31m-    public ClimberSubsystem(CANSparkMax motorLeft, CANSparkMax motorRight) {[m
+[31m-        this.motorLeft = motorLeft;[m
+[31m-        this.motorRight = motorRight;[m
+[31m-        this.motorLeft.setIdleMode(IdleMode.kBrake);[m
+[31m-        this.motorLeft.setIdleMode(IdleMode.kBrake);[m
+[31m-        this.motorLeft.setInverted(true);[m
+[31m-    }[m
+[31m-[m
+[31m-    public Command c_climberUp() {[m
+[31m-        var cmd = this.run(() -> {[m
+[31m-            this.motorLeft.setVoltage(4);[m
+[31m-            this.motorRight.setVoltage(4);[m
+[31m-        });[m
+[31m-        cmd.setName("climber - c_climberUp");[m
+[31m-[m
+[31m-        return cmd;[m
+[31m-    }[m
+[31m-[m
+[31m-    public Command c_climberDown() {[m
+[31m-        var cmd = this.run(() -> {[m
+[31m-            this.motorLeft.setVoltage(-4);[m
+[31m-            this.motorRight.setVoltage(-4);[m
+[31m-        });[m
+[31m-        cmd.setName("climber - c_climberDown");[m
+[31m-[m
+[31m-        return cmd;[m
+[31m-    }[m
+[31m-}[m
+[32m+[m[32m// package org.usfirst.frc4904.robot.subsystems;[m
+[32m+[m
+[32m+[m[32m// import com.revrobotics.CANSparkMax;[m
+[32m+[m[32m// import com.revrobotics.CANSparkBase.IdleMode;[m
+[32m+[m
+[32m+[m[32m// import edu.wpi.first.wpilibj2.command.Command;[m
+[32m+[m[32m// import edu.wpi.first.wpilibj2.command.SubsystemBase;[m
+[32m+[m
+[32m+[m[32m// public class ClimberSubsystem extends SubsystemBase {[m
+[32m+[m[32m//     public final CANSparkMax motorLeft;[m
+[32m+[m[32m//     public final CANSparkMax motorRight;[m
+[32m+[m
+[32m+[m[32m//     public ClimberSubsystem(CANSparkMax motorLeft, CANSparkMax motorRight) {[m
+[32m+[m[32m//         this.motorLeft = motorLeft;[m
+[32m+[m[32m//         this.motorRight = motorRight;[m
+[32m+[m[32m//         this.motorLeft.setIdleMode(IdleMode.kBrake);[m
+[32m+[m[32m//         this.motorRight.setIdleMode(IdleMode.kBrake);[m
+[32m+[m[32m//         this.motorLeft.setInverted(true);[m
+[32m+[m[32m//     }[m
+[32m+[m
+[32m+[m[32m//     public Command c_climberUp() {[m
+[32m+[m[32m//         var cmd = this.run(() -> {[m
+[32m+[m[32m//             this.motorLeft.setVoltage(4);[m
+[32m+[m[32m//             this.motorRight.setVoltage(4);[m
+[32m+[m[32m//         });[m
+[32m+[m[32m//         cmd.setName("climber - c_climberUp");[m
+[32m+[m
+[32m+[m[32m//         return cmd;[m
+[32m+[m[32m//     }[m
+[32m+[m
+[32m+[m[32m//     public Command c_climberDown() {[m
+[32m+[m[32m//         var cmd = this.run(() -> {[m
+[32m+[m[32m//             this.motorLeft.setVoltage(-4);[m
+[32m+[m[32m//             this.motorRight.setVoltage(-4);[m
+[32m+[m[32m//         });[m
+[32m+[m[32m//         cmd.setName("climber - c_climberDown");[m
+[32m+[m
+[32m+[m[32m//         return cmd;[m
+[32m+[m[32m//     }[m
+[32m+[m[32m// }[m
+[1mdiff --git a/src/main/java/org/usfirst/frc4904/robot/subsystems/SwerveSubsystem.java b/src/main/java/org/usfirst/frc4904/robot/subsystems/SwerveSubsystem.java[m
+[1mindex 220e1bd..a7b9965 100644[m
+[1m--- a/src/main/java/org/usfirst/frc4904/robot/subsystems/SwerveSubsystem.java[m
+[1m+++ b/src/main/java/org/usfirst/frc4904/robot/subsystems/SwerveSubsystem.java[m
+[36m@@ -92,7 +92,6 @@[m [mpublic class SwerveSubsystem extends SubsystemBase {[m
+ [m
+         setupPathPlanner();[m
+     }[m
+[31m-[m
+     /**[m
+      * Setup AutoBuilder for PathPlanner.[m
+      */[m

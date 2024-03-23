@@ -1,100 +1,96 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved. */
-/* Open Source Software - may be modified and shared by FRC teams. The code */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project. */
-/*----------------------------------------------------------------------------*/
 package org.usfirst.frc4904.robot;
-
-// import java.util.function.BooleanSupplier;
-// import java.util.function.DoubleSupplier;
-//import java.util.function.Supplier;
 
 import org.usfirst.frc4904.robot.humaninterface.drivers.SwerveGain;
 import org.usfirst.frc4904.robot.humaninterface.operators.DefaultOperator;
 import org.usfirst.frc4904.standard.CommandRobotBase;
-//import org.usfirst.frc4904.standard.CommandRobotBase;
-// import org.usfirst.frc4904.standard.custom.CommandSendableChooser;
+import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.humaninput.Driver;
+import org.usfirst.frc4904.standard.humaninput.Operator;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
-// import com.ctre.phoenix6.signals.NeutralModeValue;
-
-// import edu.wpi.first.math.controller.DifferentialDriveWheelVoltages;
-
-// import edu.wpi.first.math.trajectory.Trajectory;
-// import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import edu.wpi.first.wpilibj2.command.Commands;
-// import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static org.usfirst.frc4904.robot.Utils.nameCommand;
+
+import java.util.Map;
 
 import javax.swing.RowFilter.ComparisonType;
 
 import org.usfirst.frc4904.robot.RobotMap.Component;
 
 public class Robot extends CommandRobotBase {
-    // private final RobotMap map = new RobotMap();
-    // private final RobotContainer2 donttouchme = new RobotContainer2(RobotMap.Component.frontLeftWheelTalon, RobotMap.Component.backLeftWheelTalon, RobotMap.Component.frontRightWheelTalon, RobotMap.Component.backRightWheelTalon, RobotMap.Component.navx);
-    // private SendableChooser<Supplier<Command>> autonomousCommand = new SendableChooser<Supplier<Command>>();
-
     private final Driver driver = new SwerveGain();
-    private final org.usfirst.frc4904.standard.humaninput.Operator operator = new DefaultOperator();
+    private final Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
+    private final CustomCommandJoystick joystick = new CustomCommandJoystick(0, 0.1);
+    private GenericEntry delaySlider;
 
+    // public double armJoystick(double input) {
+
+    //     return input*30 - Math.signum(input);
+    // }
     protected double scaleGain(double input, double gain, double exp) {
-		return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
-	}
+        return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
+    }
+    protected double nudge(double angle) {
+        if (angle > 90 && angle < 180) {
+            if (angle > 100 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
+                return -.0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
+            }
+            return -.0001;
+        }
+        if (angle < 2 && angle > 0 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
+            return .0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
+        }
+        return .0001;
+    }
 
     public Robot() {
         super();
-        //can set deafault auton command here
-        }
+    }
 
     @Override
     public void initialize() {
+        CameraServer.startAutomaticCapture();
     }
 
-@Override
-public void teleopInitialize() {
+    @Override
+    public void teleopInitialize() {
+        driver.bindCommands();
+        operator.bindCommands();
 
-    driver.bindCommands();
-    operator.bindCommands();
-
-    // final double TURN_MULTIPLIER = 2;
-    // RobotMap.Component.chassis.setDefaultCommand(
-    //     nameCommand("chassis - Teleop_Default - c_swerveDrive", 
-    //         new ConditionalCommand(
-    //             RobotMap.Component.chassis.c_drive(
-    //                 () -> {
-    //                     var target = new ChassisSpeeds(driver.getX(), driver.getY(), driver.getTurnSpeed());
-    //                     SmartDashboard.putNumber("help", target.omegaRadiansPerSecond);
-    //                     SmartDashboard.putNumber("drivexsupplier", driver.getX());
-            
-    //                     return target;
-    //                 }, true),
-    //             new InstantCommand(),
-    //             () -> driver.getX() != 0 || driver.getY() != 0 || driver.getTurnSpeed() != 0
-    //         )
-    //     ));
-    RobotMap.Component.chassis.setDefaultCommand(
-        RobotMap.Component.chassis.driveCommand(() -> driver.getY(), () -> driver.getX(), () -> driver.getTurnSpeed())
-    );
-
-}   
+        RobotMap.Component.chassis.setDefaultCommand(
+            RobotMap.Component.chassis.driveCommand(
+                () -> driver.getY(),
+                () -> driver.getX(),
+                () -> driver.getTurnSpeed()
+            )
+        );
+        RobotMap.Component.arm.setDefaultCommand(
+            RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 + nudge(RobotMap.Component.arm.getCurrentAngleDegrees()))
+        );
+    }
 
     @Override
     public void teleopExecute() {
@@ -102,122 +98,88 @@ public void teleopInitialize() {
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
         SmartDashboard.putNumber("robotx", RobotMap.Component.chassis.getPose().getX());
         SmartDashboard.putNumber("roboty", RobotMap.Component.chassis.getPose().getY());
-        
-        // //various logging can go here
-        // //TODO: getAbsolutePosition() MIGHT NOT WORK OR BE IN RIGHT UNITS!
-        // SmartDashboard.putNumber("FL angle-1", RobotMap.Component.FLturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("FL angle-2 (currentyl using 2)", RobotMap.Component.FLmodule.getAbsoluteAngle());
-        
-        // SmartDashboard.putNumber("FR angle-1", RobotMap.Component.FRturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("FR angle-2", RobotMap.Component.FRmodule.getAbsoluteAngle());
-        // SmartDashboard.putNumber("BL angle-1", RobotMap.Component.BLturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("BL angle-2", RobotMap.Component.BLmodule.getAbsoluteAngle());
-        // SmartDashboard.putNumber("BR angle-1", RobotMap.Component.BRturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("BR angle-2", RobotMap.Component.BRmodule.getAbsoluteAngle());
-
-        // var moduleTargets = RobotMap.Component.chassis.kinematics.toSwerveModuleStates(new ChassisSpeeds(driver.getX(), driver.getY(), driver.getTurnSpeed()));
-        // for (var c : moduleTargets){
-        //     SmartDashboard.putNumber("placeholder", c.angle.getDegrees());
-        // }
-        // SmartDashboard.putNumber("FL speed", RobotMap.Component.FLdrive.get());
-        // SmartDashboard.putNumber("FR speed", RobotMap.Component.FRdrive.get());
-        // SmartDashboard.putNumber("BL speed", RobotMap.Component.BLdrive.get());
-        // SmartDashboard.putNumber("BR speed", RobotMap.Component.BRdrive.get());
-
-        // SmartDashboard.putNumber("driver X ", driver.getX());
-        // SmartDashboard.putNumber("driver Y ", driver.getY());
-        // SmartDashboard.putNumber("driver Z ", driver.getTurnSpeed());
-
-        // //navx gyro readings
-        // SmartDashboard.putNumber("navx angle", RobotMap.Component.navx.getAngle());
+        SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
+        SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
+        SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
+        // RobotMap.Component.armMotor.setVoltage(2);
     }
 
     @Override
     public void autonomousInitialize() {
-        // start autons here
-        RobotMap.Component.chassis.getAutonomousCommand("line", true
-        ).schedule();
+        RobotMap.Component.arm.setDefaultCommand(null);
+        RobotMap.Component.chassis.zeroGyro();
+        RobotMap.getAutonomousCommand().schedule();
+
+        // RobotMap.Component.arm.scuffed().schedule();
+
+        
+        // //TODO create paths
+        // var command = new SequentialCommandGroup(
+        //     new WaitCommand(0),
+        //     // RobotMap.Component.arm.c_holdOuttakeAngle(-1, -1, null),
+        //     // new WaitCommand(1),
+        //     // RobotMap.Component.chassis.getAutonomousCommand("amp-leave_start", false),
+        //     // RobotMap.Component.chassis.getAutonomousCommand("leave_start-return_start", false)
+        // );
+        // RobotMap.Component.chassis.driveToPose(new Pose2d(1, 1, new Rotation2d(0))).schedule();
+
+        // RobotMap.Component.chassis.getAutonomousCommand("auton", true).schedule();
+
+        // command.schedule();
+        //manual no-pathplanner "autons"
+        //RobotMap.Component.chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+        // new SequentialCommandGroup(
+        //     new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> .25, () -> 0, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getX() > .25)),
+        //     new InstantCommand(() -> System.out.print("drove forward" + RobotMap.Component.chassis.getPose().getX())),
+        //     new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> 0, () -> 0.25, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getY() > .3)),
+        //     new InstantCommand(() -> System.out.print("drove right"  + RobotMap.Component.chassis.getPose().getY())),
+        //     RobotMap.Component.arm.scuffed(50, 50, null),
+        //     new InstantCommand(() -> System.out.print("arm up"  + RobotMap.Component.arm.getCurrentAngleDegrees())),
+        //     new ParallelCommandGroup(
+        //         new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> 0, () -> 0.25, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getY() > 1)),
+        //         RobotMap.Component.arm.scuffedback()
+        //     ),
+        //     new InstantCommand(() -> System.out.print("arm down and clear"  + RobotMap.Component.arm.getCurrentAngleDegrees()))
+        // ).schedule();
+        // new SequentialCommandGroup(
+        //     new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> .25, () -> 0.3, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getX() > .25)),
+        //     new InstantCommand(() -> System.out.print("drove diaganol" + RobotMap.Component.chassis.getPose().getX())),
+        //     RobotMap.Component.arm.scuffed(50, 50, null),
+        //     new InstantCommand(() -> System.out.print("arm up"  + RobotMap.Component.arm.getCurrentAngleDegrees())),
+        //     new ParallelCommandGroup(
+        //         new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> 0, () -> 0.25, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getY() > 1)),
+        //         RobotMap.Component.arm.scuffedback()
+        //     ),
+        //     new InstantCommand(() -> System.out.print("arm down and clear"  + RobotMap.Component.arm.getCurrentAngleDegrees()))
+        // ).schedule();
+        // new ParallelRaceGroup(RobotMap.Component.chassis.driveCommand(() -> .25, () -> 0, () -> 0), new WaitUntilCommand(() -> RobotMap.Component.chassis.getPose().getX() > 1.5)).schedule();
     }
 
     @Override
-    public void autonomousExecute() {
-        //logging can go here
-    }
+    public void autonomousExecute() {}
 
     @Override
-    public void disabledInitialize() {
-        //do things like setting brake mode here
-    }
+    public void disabledInitialize() {}
 
     @Override
-    public void disabledExecute() {
-    }
+    public void disabledExecute() {}
 
     @Override
     public void testInitialize() {
-        //do things like setting neutral or brake mode on the mechanism or wheels here
-    }
-    
-    @Override
-    public void testExecute() {
-        // //coast drive
-        // RobotMap.Component.FLdrive.stopMotor();
-        // RobotMap.Component.FRdrive.stopMotor();
-        // RobotMap.Component.BLdrive.stopMotor();
-        // RobotMap.Component.BRdrive.stopMotor();
+        //RobotMap.Component.arm.scuffed(50, 50, null).schedule();
+        // RobotMap.Component.chassis.setDefaultCommand(null);
+        SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
+        SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
+        SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
+        SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
+        SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
 
-        // RobotMap.Component.FLdrive.setNeutralMode(NeutralModeValue.Coast);
-        // RobotMap.Component.FRdrive.setNeutralMode(NeutralModeValue.Coast);
-        // RobotMap.Component.BLdrive.setNeutralMode(NeutralModeValue.Coast);
-        // RobotMap.Component.BRdrive.setNeutralMode(NeutralModeValue.Coast);
-        
-        // //coast turn
-        // RobotMap.Component.FLturn.neutralOutput();
-        // RobotMap.Component.FRturn.neutralOutput();
-        // RobotMap.Component.BLturn.neutralOutput();
-        // RobotMap.Component.BRturn.neutralOutput();
 
-        // RobotMap.Component.FLturn.setCoastOnNeutral();
-        // RobotMap.Component.FRturn.setCoastOnNeutral();
-        // RobotMap.Component.BLturn.setCoastOnNeutral();
-        // RobotMap.Component.BRturn.setCoastOnNeutral();
-
-        // //various logging can go here
-        // //TODO: getAbsolutePosition() MIGHT NOT WORK OR BE IN RIGHT UNITS!
-        // SmartDashboard.putNumber("FL angle-1", RobotMap.Component.FLturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("FL angle-2 (currentyl using 2)", RobotMap.Component.FLmodule.getAbsoluteAngle());
-        
-        // SmartDashboard.putNumber("FR angle-1", RobotMap.Component.FRturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("FR angle-2", RobotMap.Component.FRmodule.getAbsoluteAngle());
-        // SmartDashboard.putNumber("BL angle-1", RobotMap.Component.BLturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("BL angle-2", RobotMap.Component.BLmodule.getAbsoluteAngle());
-        // SmartDashboard.putNumber("BR angle-1", RobotMap.Component.BRturnEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("BR angle-2", RobotMap.Component.BRmodule.getAbsoluteAngle());
-
-        // var moduleTargets = RobotMap.Component.chassis.kinematics.toSwerveModuleStates(new ChassisSpeeds(driver.getX(), driver.getY(), driver.getTurnSpeed()));
-        // for (var c : moduleTargets){
-        //     SmartDashboard.putNumber(c.toString(), c.angle.getDegrees());
-        // }
-        // SmartDashboard.putNumber("FL speed", RobotMap.Component.FLdrive.get());
-        // SmartDashboard.putNumber("FR speed", RobotMap.Component.FRdrive.get());
-        // SmartDashboard.putNumber("BL speed", RobotMap.Component.BLdrive.get());
-        // SmartDashboard.putNumber("BR speed", RobotMap.Component.BRdrive.get());
-
-        // SmartDashboard.putNumber("driver X ", driver.getX());
-        // SmartDashboard.putNumber("driver Y ", driver.getY());
-        // SmartDashboard.putNumber("driver Z ", driver.getTurnSpeed());
-
-        // //navx gyro readings
-        // SmartDashboard.putNumber("navx angle", RobotMap.Component.navx.getAngle());
     }
 
     @Override
-    public void alwaysExecute() {
-        // logging stuff can go here
-    }
+    public void testExecute() {}
+
+    @Override
+    public void alwaysExecute() {}
 }
-
-
-
-
-    
