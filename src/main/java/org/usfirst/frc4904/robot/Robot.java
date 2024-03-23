@@ -100,6 +100,8 @@ public void teleopInitialize() {
     public void teleopExecute() {
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
+        SmartDashboard.putNumber("robotx", RobotMap.Component.chassis.getPose().getX());
+        SmartDashboard.putNumber("roboty", RobotMap.Component.chassis.getPose().getY());
         
         // //various logging can go here
         // //TODO: getAbsolutePosition() MIGHT NOT WORK OR BE IN RIGHT UNITS!

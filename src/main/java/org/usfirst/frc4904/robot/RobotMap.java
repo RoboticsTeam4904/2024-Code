@@ -26,6 +26,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import java.io.File;
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
@@ -195,8 +197,9 @@ public class RobotMap {
     }
 
     public RobotMap() {
+        try{
         Component.chassis = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), 360, .0473, 4.5);
-
+        }catch(IOException e){}
         // Component.navx = new AHRS(SerialPort.Port.kMXP);
 
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
