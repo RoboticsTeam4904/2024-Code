@@ -18,6 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -43,8 +46,10 @@ public class Robot extends CommandRobotBase {
     private final Driver driver = new SwerveGain();
     private final Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
+    private final PWM brandonsthing = new PWM(7);
     private final CustomCommandJoystick joystick = new CustomCommandJoystick(0, 0.1);
-    private GenericEntry delaySlider;
+    // private GenericEntry delaySlider;
+    private int turnmode = 0; //0 is no nudge, 1 is button1, 2 is button 2
 
     // public double armJoystick(double input) {
 
@@ -53,6 +58,10 @@ public class Robot extends CommandRobotBase {
     protected double scaleGain(double input, double gain, double exp) {
         return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
     }
+    public void setrawpwm() {
+        brandonsthing.setPulseTimeMicroseconds(1000);
+        // System.out.print("did pwm");
+    }
     protected double nudge(double angle) {
         if (angle > 90 && angle < 180) {
             if (angle > 100 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
@@ -60,10 +69,38 @@ public class Robot extends CommandRobotBase {
             }
             return -.0001;
         }
-        if (angle < 2 && angle > 0 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
+        if (angle < 7 && angle > 0 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
             return .0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
         }
         return .0001;
+    }
+
+    public double driveNudge(double angle, boolean button1, boolean button2, double turnspeed) {
+        var goal = 0;
+        var allianceFactor = 1;
+        if (DriverStation.getAlliance().get()==Alliance.Red){allianceFactor = -1;} //default is blue, only change if red
+        if (button1) {
+            turnmode = 2;
+        }
+        if (button2) {
+            turnmode = 1;
+        }
+        if (Math.abs(turnspeed)>.2) {
+            turnmode = 0;
+        }
+        if(turnmode==0){return 0;}
+        else if(turnmode == 1){
+            goal = 90*allianceFactor;
+        }
+        else if (turnmode == 2){
+            goal = 120*allianceFactor;
+        }
+        var speed = (goal - angle)/100;
+        if (angle<-(180-goal)){speed*=-1;}
+        if (Math.abs(speed)<0.01){
+            turnmode = 0;
+        }
+        return speed;
     }
 
     public Robot() {
@@ -72,7 +109,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void initialize() {
-        CameraServer.startAutomaticCapture();
+        // CameraServer.startAutomaticCapture();
     }
 
     @Override
@@ -84,7 +121,7 @@ public class Robot extends CommandRobotBase {
             RobotMap.Component.chassis.driveCommand(
                 () -> driver.getY(),
                 () -> driver.getX(),
-                () -> driver.getTurnSpeed()
+                () -> (driver.getTurnSpeed() + driveNudge(RobotMap.Component.chassis.getHeading().getDegrees(), RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean(), RobotMap.HumanInput.Driver.turnJoystick.button2.getAsBoolean(), driver.getTurnSpeed()))
             )
         );
         RobotMap.Component.arm.setDefaultCommand(
@@ -99,6 +136,7 @@ public class Robot extends CommandRobotBase {
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
         SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
         SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
+        SmartDashboard.putNumber("chassis angle", RobotMap.Component.chassis.getHeading().getDegrees());
         // RobotMap.Component.armMotor.setVoltage(2);
     }
 
@@ -165,7 +203,7 @@ public class Robot extends CommandRobotBase {
     @Override
     public void testInitialize() {
         //RobotMap.Component.arm.scuffed(50, 50, null).schedule();
-        // RobotMap.Component.chassis.setDefaultCommand(null);
+        RobotMap.Component.chassis.setDefaultCommand(null);
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
@@ -176,8 +214,13 @@ public class Robot extends CommandRobotBase {
     }
 
     @Override
-    public void testExecute() {}
+    public void testExecute() {
+        setrawpwm();
+
+    }
 
     @Override
-    public void alwaysExecute() {}
+    public void alwaysExecute() {
+        setrawpwm();
+    }
 }
