@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.usfirst.frc4904.robot.RobotMap;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 
 import swervelib.SwerveController;
@@ -260,6 +261,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 true,
                 false
             );
+
+            if (translationX.getAsDouble() != 0 || translationY.getAsDouble() != 0 || angularRotationX.getAsDouble() != 0) {
+                RobotMap.Component.led.setRobotInMotion();
+            }
         });
     }
 

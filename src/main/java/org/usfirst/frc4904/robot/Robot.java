@@ -58,10 +58,7 @@ public class Robot extends CommandRobotBase {
     protected double scaleGain(double input, double gain, double exp) {
         return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
     }
-    public void setrawpwm() {
-        brandonsthing.setPulseTimeMicroseconds(1000);
-        // System.out.print("did pwm");
-    }
+
     protected double nudge(double angle) {
         if (angle > 90 && angle < 180) {
             if (angle > 100 &&  (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) > 0) {
@@ -114,6 +111,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void teleopInitialize() {
+        RobotMap.Component.led.setTeleopEnabled();
         driver.bindCommands();
         operator.bindCommands();
 
@@ -126,11 +124,12 @@ public class Robot extends CommandRobotBase {
         );
         RobotMap.Component.arm.setDefaultCommand(
             RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 + nudge(RobotMap.Component.arm.getCurrentAngleDegrees()))
-        );
+        );      
     }
 
     @Override
     public void teleopExecute() {
+        RobotMap.Component.led.setSpatulaAngle(RobotMap.Component.arm.getCurrentAngleDegrees());
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
@@ -142,6 +141,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void autonomousInitialize() {
+        RobotMap.Component.led.setAutonEnabled();
         RobotMap.Component.arm.setDefaultCommand(null);
         RobotMap.Component.chassis.zeroGyro();
         RobotMap.getAutonomousCommand().schedule();
@@ -195,7 +195,9 @@ public class Robot extends CommandRobotBase {
     public void autonomousExecute() {}
 
     @Override
-    public void disabledInitialize() {}
+    public void disabledInitialize() {
+        RobotMap.Component.led.setRobotDisabled();
+    }
 
     @Override
     public void disabledExecute() {}
@@ -215,12 +217,9 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void testExecute() {
-        setrawpwm();
-
     }
 
     @Override
     public void alwaysExecute() {
-        setrawpwm();
     }
 }

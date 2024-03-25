@@ -2,6 +2,7 @@ package org.usfirst.frc4904.robot;
 
 import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
+import org.usfirst.frc4904.robot.subsystems.LedSubsystem;
 // import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
@@ -65,6 +66,7 @@ public class RobotMap {
 
         public static class PWM {
             public static final int ARM_ENCODER = 0;
+            public static final int LED = 7;
         }
 
         public static class CAN {
@@ -167,6 +169,8 @@ public class RobotMap {
         public static ClimberSubsystem climber;
         public static CANSparkMax climberLeft;
         public static CANSparkMax climberRight;
+
+        public static LedSubsystem led;
     }
 
     public static class NetworkTables {
@@ -210,7 +214,7 @@ public class RobotMap {
         Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushless);
         Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushless);
         Component.climber = new ClimberSubsystem(Component.climberLeft, Component.climberRight);
-
+        Component.led = new LedSubsystem(Port.PWM.LED);
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
         HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
