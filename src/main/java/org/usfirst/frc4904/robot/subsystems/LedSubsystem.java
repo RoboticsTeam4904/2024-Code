@@ -7,6 +7,7 @@ public class LedSubsystem extends SubsystemBase{
     public final PWM ledPWM;
     private int pulseTime;
     private boolean hazardLightsOn;
+    private boolean robotInMotion;
 
     public LedSubsystem(int id) { 
         ledPWM = new PWM(id);
@@ -33,6 +34,11 @@ public class LedSubsystem extends SubsystemBase{
             if (degrees > 10 && degrees <= 340) {
                 set(20);
             }
+            else {
+                if(pulseTime == 20) {
+                    set(70);
+                }
+            }
         }
 
     public void setAutonEnabled() {
@@ -44,11 +50,18 @@ public class LedSubsystem extends SubsystemBase{
     }
 
     public void setClimberRetract() {
-    set(50);
+        set(50);
     }
 
-    public void setRobotInMotion() {
-        set(60);
+    public void setRobotInMotion(double xspeed, double yspeed, double anglespeed) {
+        if (Math.abs(xspeed) > 0.1 || Math.abs(yspeed) > 0.1 || Math.abs(anglespeed) > 0.1) {
+            set(60);
+        }
+        else {
+            if (pulseTime == 60) {
+                set(70);
+            }
+        }        
     }
 
     public void setTeleopEnabled() {
@@ -61,7 +74,6 @@ public class LedSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
         ledPWM.setPulseTimeMicroseconds(pulseTime);
     }
 }

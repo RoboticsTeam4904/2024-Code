@@ -261,10 +261,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 true,
                 false
             );
+            
 
-            if (translationX.getAsDouble() != 0 || translationY.getAsDouble() != 0 || angularRotationX.getAsDouble() != 0) {
-                RobotMap.Component.led.setRobotInMotion();
-            }
+            // set led to robot in motion
+            RobotMap.Component.led.setRobotInMotion(translationX.getAsDouble(), translationY.getAsDouble(), angularRotationX.getAsDouble());
         });
     }
 

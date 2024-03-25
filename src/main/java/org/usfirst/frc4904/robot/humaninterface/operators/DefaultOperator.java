@@ -35,9 +35,9 @@ public class DefaultOperator extends Operator {
             new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(6)),
             new InstantCommand(() -> RobotMap.Component.led.setClimberExtend())))
         ;
-        joystick.button5.whileFalse(new ParallelCommandGroup(
-            new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
-            new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
+        joystick.button5.onFalse(new ParallelCommandGroup(
+            new InstantCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
+            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
             new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())));
 
         joystick.button3.whileTrue(new ParallelCommandGroup(
@@ -45,9 +45,9 @@ public class DefaultOperator extends Operator {
             new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(-6)),
             new InstantCommand(() -> RobotMap.Component.led.setClimberRetract())));
         
-        joystick.button3.whileFalse(new ParallelCommandGroup(
-            new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
-            new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
+        joystick.button3.onFalse(new ParallelCommandGroup(
+            new InstantCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
+            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
             new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())));
 
         joystick.button7.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(6)));
