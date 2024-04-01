@@ -217,8 +217,8 @@ public class RobotMap {
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
         HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
-        // Component.ledPixels = new CustomNeoPixels("ledpixels", 7){};
-    }
+    }        // Component.ledPixels = new CustomNeoPixels("ledpixels", 7){};
+
 
     public static Command getAutonomousCommand() {
         return new PathPlannerAuto("Center autoBlue");
