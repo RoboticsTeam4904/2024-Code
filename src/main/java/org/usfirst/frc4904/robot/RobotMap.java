@@ -4,6 +4,7 @@ import org.usfirst.frc4904.robot.subsystems.ArmSubsystem;
 import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 // import org.usfirst.frc4904.robot.subsystems.ClimberSubsystem;
 import org.usfirst.frc4904.robot.subsystems.SwerveSubsystem;
+import org.usfirst.frc4904.standard.custom.CustomNeoPixels;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandJoystick;
 import org.usfirst.frc4904.standard.custom.controllers.CustomCommandXbox;
 import org.usfirst.frc4904.standard.custom.motorcontrollers.CANTalonFX;
@@ -38,6 +39,7 @@ import org.usfirst.frc4904.standard.subsystems.motor.SparkMaxMotorSubsystem;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RobotMap {
     public static class Port {
@@ -167,6 +169,7 @@ public class RobotMap {
         public static ClimberSubsystem climber;
         public static CANSparkMax climberLeft;
         public static CANSparkMax climberRight;
+        // public static CustomNeoPixels ledPixels;
     }
 
     public static class NetworkTables {
@@ -205,7 +208,7 @@ public class RobotMap {
         Component.armMotor = new CANTalonFX(Port.CANMotor.ARM_MOTOR);
         Component.armEncoder = new DutyCycleEncoder(Port.PWM.ARM_ENCODER); // TODO: fix port
         Component.arm = new ArmSubsystem(Component.armMotor, Component.armEncoder);
-        NamedCommands.registerCommand("armUp", Component.arm.scuffed());
+        NamedCommands.registerCommand("armUp", Component.arm.scuffed().andThen(new WaitCommand(.2))); //quick delay to prevent pulling note out
         NamedCommands.registerCommand("armDown", Component.arm.scuffedback());
         Component.climberRight = new CANSparkMax(Port.CANMotor.CLIMBER_RIGHT, MotorType.kBrushless);
         Component.climberLeft = new CANSparkMax(Port.CANMotor.CLIMBER_LEFT, MotorType.kBrushless);
@@ -214,10 +217,11 @@ public class RobotMap {
         HumanInput.Driver.xyJoystick = new CustomCommandJoystick(Port.HumanInput.xyJoystickPort, 0.01);
         HumanInput.Driver.turnJoystick = new CustomCommandJoystick(Port.HumanInput.zJoystickPort, 0.01);
         HumanInput.Operator.joystick = new CustomCommandJoystick(Port.HumanInput.joystick, 0.01);
+        // Component.ledPixels = new CustomNeoPixels("ledpixels", 7){};
     }
 
     public static Command getAutonomousCommand() {
-        return new PathPlannerAuto("autoBlue");
+        return new PathPlannerAuto("Center autoBlue");
     }
 
 }

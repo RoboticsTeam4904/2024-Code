@@ -18,6 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -47,8 +49,6 @@ public class Robot extends CommandRobotBase {
     private final Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
     private final PWM brandonsthing = new PWM(7);
-    private final CustomCommandJoystick joystick = new CustomCommandJoystick(0, 0.1);
-    // private GenericEntry delaySlider;
     private int turnmode = 0; //0 is no nudge, 1 is button1, 2 is button 2
 
     // public double armJoystick(double input) {
@@ -57,10 +57,6 @@ public class Robot extends CommandRobotBase {
     // }
     protected double scaleGain(double input, double gain, double exp) {
         return Math.pow(Math.abs(input), exp) * gain * Math.signum(input);
-    }
-    public void setrawpwm() {
-        brandonsthing.setPulseTimeMicroseconds(1000);
-        // System.out.print("did pwm");
     }
     protected double nudge(double angle) {
         if (angle > 90 && angle < 180) {
@@ -138,6 +134,7 @@ public class Robot extends CommandRobotBase {
         SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
         SmartDashboard.putNumber("chassis angle", RobotMap.Component.chassis.getHeading().getDegrees());
         // RobotMap.Component.armMotor.setVoltage(2);
+        // setrawpwm(50);
     }
 
     @Override
@@ -209,18 +206,16 @@ public class Robot extends CommandRobotBase {
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
         SmartDashboard.putNumber("arm voltage", RobotMap.Component.armMotor.getMotorVoltage().getValue());
         SmartDashboard.putNumber("joystick position", RobotMap.HumanInput.Operator.joystick.getAxis(1) * 30);
-
-
+        
     }
 
     @Override
     public void testExecute() {
-        setrawpwm();
-
+        // setrawpwm(200);
     }
 
     @Override
     public void alwaysExecute() {
-        setrawpwm();
+        //setrawpwm();
     }
 }
