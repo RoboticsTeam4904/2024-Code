@@ -110,6 +110,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void teleopInitialize() {
+        RobotMap.Component.led.setTeleopEnabled();
         driver.bindCommands();
         operator.bindCommands();
 
@@ -122,11 +123,12 @@ public class Robot extends CommandRobotBase {
         );
         RobotMap.Component.arm.setDefaultCommand(
             RobotMap.Component.arm.c_controlAngularVelocity(() -> RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120 + nudge(RobotMap.Component.arm.getCurrentAngleDegrees()))
-        );
+        );      
     }
 
     @Override
     public void teleopExecute() {
+        RobotMap.Component.led.setSpatulaAngle(RobotMap.Component.arm.getCurrentAngleDegrees());
         SmartDashboard.putBoolean("button", RobotMap.HumanInput.Driver.turnJoystick.button1.getAsBoolean());
         SmartDashboard.putNumber("max angular velocity", RobotMap.Component.chassis.swerveDrive.getMaximumAngularVelocity());
         SmartDashboard.putNumber("arm angle", RobotMap.Component.arm.getCurrentAngleDegrees());
@@ -139,6 +141,7 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void autonomousInitialize() {
+        RobotMap.Component.led.setAutonEnabled();
         RobotMap.Component.arm.setDefaultCommand(null);
         RobotMap.Component.chassis.zeroGyro();
         RobotMap.getAutonomousCommand().schedule();
@@ -192,7 +195,9 @@ public class Robot extends CommandRobotBase {
     public void autonomousExecute() {}
 
     @Override
-    public void disabledInitialize() {}
+    public void disabledInitialize() {
+        RobotMap.Component.led.setRobotDisabled();
+    }
 
     @Override
     public void disabledExecute() {}
