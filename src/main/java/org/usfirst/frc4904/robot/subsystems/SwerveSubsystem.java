@@ -23,6 +23,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,20 +69,6 @@ public class SwerveSubsystem extends SubsystemBase {
      * Swerve drive object.
      */
     public final SwerveDrive swerveDrive;
-  /**
-   * Photonvision pose estimator
-   */
-  public final PhotonPoseEstimator photonPoseEstimator;
-  /**
-   * Phtonvision camera
-   */
-  public final PhotonCamera photonCamera;
-  public final Transform3d robotToCamera;
-  /**
-   * layout of the apriltags on the field
-   */
-  public final AprilTagFieldLayout aprilTagFieldLayout;
-
 
     /**
      * Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -100,13 +87,6 @@ public class SwerveSubsystem extends SubsystemBase {
         this.angleConversionFactor = angleFactor;
         this.driveConversionFactor = driveFactor;
         this.maximumSpeed = maxSpeed;
-
-        // Vision stuff
-        this.aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2024-crescendo.json");
-        this.photonCamera =  new PhotonCamera("placeholder"); //TODO: replace with actual camera name and add as many cameras as we need
-        this.robotToCamera = new Transform3d(new Translation3d(-1, -1, -1), new Rotation3d(-1,-1,-1)); //TODO: stores the camera position relative to the robot
-        this.photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCamera,robotToCamera);
-
         // motor conversion factor is (pi * wheel diameter in meters) / (gear ratio * encoder resolution).
         // in this case the wheel diameter is 4 inches, which must be converted to meters to get meters/second.
         // the gear ratio is 6.75 motor revolutions per wheel rotation.
@@ -528,17 +508,20 @@ public class SwerveSubsystem extends SubsystemBase {
   //   return photonPoseEstimator.update();
   // }
 
-  /**
-   * @param estimatedRobotPose result from updateVisionEstimate()
-   */
-  public void addVisionMeasurement()
-  {
-    Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update();
-    if (estimatedRobotPose.isEmpty()){
-      return;
-    }
-    swerveDrive.addVisionMeasurement(estimatedRobotPose.get().estimatedPose.toPose2d(), estimatedRobotPose.get().timestampSeconds);
-  }
+//   /**
+//    * @param estimatedRobotPose result from updateVisionEstimate()
+//    */
+//   public void addVisionMeasurement()
+//   {
+//     Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update();
+//     if (estimatedRobotPose.isEmpty()){
+//       return;
+//     }
+//     SmartDashboard.putNumber("vision X", estimatedRobotPose.get().estimatedPose.getX());
+//     SmartDashboard.putNumber("vision Y", estimatedRobotPose.get().estimatedPose.getY());
+//     SmartDashboard.putNumber("vision Z", estimatedRobotPose.get().estimatedPose.getZ());
+//     swerveDrive.addVisionMeasurement(estimatedRobotPose.get().estimatedPose.toPose2d(), estimatedRobotPose.get().timestampSeconds);
+//   }
 
     public void brickMode() {
         swerveDrive.swerveModules[0].setAngle(45);

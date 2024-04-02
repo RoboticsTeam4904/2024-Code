@@ -1,5 +1,6 @@
 package swervelib;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,6 +24,8 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +33,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import swervelib.encoders.CANCoderSwerve;
 import swervelib.imu.Pigeon2Swerve;
 import swervelib.imu.SwerveIMU;
@@ -133,6 +143,20 @@ public class SwerveDrive
    * Maximum speed of the robot in meters per second.
    */
   private       double                   maxSpeedMPS;
+  /**
+   * Photonvision pose estimator
+   */
+  public final PhotonPoseEstimator photonPoseEstimator;
+  /**
+   * Phtonvision camera
+   */
+  public final PhotonCamera photonCamera;
+  public final Transform3d robotToCamera;
+  /**
+   * layout of the apriltags on the field
+   */
+  public final AprilTagFieldLayout aprilTagFieldLayout;
+
 
   /**
    * Creates a new swerve drivebase subsystem. Robot is controlled via the {@link SwerveDrive#drive} method, or via the
@@ -148,7 +172,7 @@ public class SwerveDrive
    *                         you have feet per second!
    */
   public SwerveDrive(
-      SwerveDriveConfiguration config, SwerveControllerConfiguration controllerConfig, double maxSpeedMPS)
+      SwerveDriveConfiguration config, SwerveControllerConfiguration controllerConfig, double maxSpeedMPS) throws IOException
   {
     this.maxSpeedMPS = maxSpeedMPS;
     swerveDriveConfiguration = config;
@@ -156,6 +180,12 @@ public class SwerveDrive
     // Create Kinematics from swerve module locations.
     kinematics = new SwerveDriveKinematics(config.moduleLocationsMeters);
     odometryThread = new Notifier(this::updateOdometry);
+
+    // Vision stuff
+      this.aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("2024-crescendo.json");
+      this.photonCamera =  new PhotonCamera("placeholder"); //TODO: replace with actual camera name and add as many cameras as we need
+      this.robotToCamera = new Transform3d(new Translation3d(-1, -1, -1), new Rotation3d(-1,-1,-1)); //TODO: stores the camera position relative to the robot
+      this.photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCamera,robotToCamera);
 
     // Create an integrator for angle if the robot is being simulated to emulate an IMU
     // If the robot is real, instantiate the IMU instead.
@@ -606,7 +636,6 @@ public class SwerveDrive
    */
   public Pose2d getPose()
   {
-
     odometryLock.lock();
     Pose2d poseEstimation = swerveDrivePoseEstimator.getEstimatedPosition();
     odometryLock.unlock();
@@ -931,6 +960,14 @@ public class SwerveDrive
       // Update odometry
       swerveDrivePoseEstimator.update(getYaw(), getModulePositions());
 
+      //update with vision
+      Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update();
+      if (!estimatedRobotPose.isEmpty()) {
+        if (estimatedRobotPose.get().targetsUsed.size() >= 2){
+          swerveDrivePoseEstimator.addVisionMeasurement(estimatedRobotPose.get().estimatedPose.toPose2d(), estimatedRobotPose.get().timestampSeconds);
+        }
+      }
+
       // Update angle accumulator if the robot is simulated
       if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal())
       {
@@ -987,6 +1024,7 @@ public class SwerveDrive
       {
         SwerveDriveTelemetry.updateData();
       }
+    
     } catch (Exception e)
     {
       odometryLock.unlock();
