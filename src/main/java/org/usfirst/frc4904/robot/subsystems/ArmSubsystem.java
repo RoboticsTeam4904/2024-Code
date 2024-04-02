@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kS = 0.00;
     public static final double kV = 1.4555;
     public static final double kA = 0.0513;
-    public static final double kG = 0.225;
+    public static final double kG = 0.235;
     // public static finl double kG = .5;
 
 
@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
     private static final double INTAKE_ANGLE = 0;
 
     //TODO: this number has been wrong, make sure it is correct before comps 
-    private static final double ARM_OFFSET = 63;
+    private static final double ARM_OFFSET = 182;
 
     public final CANTalonFX armMotor;
     public final ArmFeedforward feedforward;
@@ -94,7 +94,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
     public Command scuffed(
     ) {
-        var cmd = new InstantCommand(() -> System.out.println("arm working")).andThen(new ParallelRaceGroup(new RunCommand(() -> armMotor.setVoltage(3)), new WaitUntilCommand((() -> (getCurrentAngleDegrees() > 89 && getCurrentAngleDegrees() < 180)))).andThen(new InstantCommand(() -> armMotor.setVoltage(0))));
+        var cmd = new InstantCommand(() -> System.out.println("arm working")).andThen(new ParallelRaceGroup(new RunCommand(() -> armMotor.setVoltage(5.5)), new WaitUntilCommand((() -> (getCurrentAngleDegrees() > 88 && getCurrentAngleDegrees() < 180)))).andThen(new InstantCommand(() -> armMotor.setVoltage(0))));
         cmd.addRequirements(this);
         return cmd;
         }
