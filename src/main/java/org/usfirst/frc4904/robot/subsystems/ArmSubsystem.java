@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
     private static final double INTAKE_ANGLE = 0;
 
     //TODO: this number has been wrong, make sure it is correct before comps 
-    private static final double ARM_OFFSET = 182;
+    private static final double ARM_OFFSET = 181;
 
     public final CANTalonFX armMotor;
     public final ArmFeedforward feedforward;

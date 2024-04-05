@@ -48,7 +48,7 @@ public class Robot extends CommandRobotBase {
     private final Driver driver = new SwerveGain();
     private final Operator operator = new DefaultOperator();
     private final RobotMap map = new RobotMap();
-    private final PWM brandonsthing = new PWM(7);
+    //private final PWM brandonsthing = new PWM(7);
     private int turnmode = 0; //0 is no nudge, 1 is button1, 2 is button 2
 
     // public double armJoystick(double input) {
@@ -65,7 +65,7 @@ public class Robot extends CommandRobotBase {
             }
             return -.0001;
         }
-        if (angle < 7 && angle > 0 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
+        if (angle < 4 && angle > 0 && (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120) < 0) {
             return .0001 - (RobotMap.HumanInput.Operator.joystick.getAxis(1) * -120);
         }
         return .0001;
@@ -216,11 +216,9 @@ public class Robot extends CommandRobotBase {
 
     @Override
     public void testExecute() {
-        // setrawpwm(200);
     }
 
     @Override
     public void alwaysExecute() {
-        //setrawpwm();
     }
 }

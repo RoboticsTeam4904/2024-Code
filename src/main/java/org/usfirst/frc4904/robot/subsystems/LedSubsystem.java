@@ -18,6 +18,9 @@ public class LedSubsystem extends SubsystemBase{
         if (!hazardLightsOn) { // only change pulse time if hazard lights are not on
             pulseTime = value;
         }
+        if (hazardLightsOn) {
+            pulseTime = 10;
+        }
     }
 
     public void setHazardLights() {
@@ -75,6 +78,6 @@ public class LedSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         ledPWM.setPulseTimeMicroseconds(pulseTime);
-        System.out.print("iscooking");
+        //System.out.print("PWM: " + pulseTime);
     }
 }

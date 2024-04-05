@@ -37,8 +37,9 @@ public class DefaultOperator extends Operator {
         ;
         joystick.button5.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
-            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
-            new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())));
+            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0))
+            //, new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())
+        ));
 
         joystick.button3.whileTrue(new ParallelCommandGroup(
             new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(-6)),
@@ -47,8 +48,9 @@ public class DefaultOperator extends Operator {
         
         joystick.button3.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)),
-            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0)),
-            new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())));
+            new InstantCommand(() -> RobotMap.Component.climberRight.setVoltage(0))
+            // , new InstantCommand(() -> RobotMap.Component.led.setTeleopEnabled())
+        ));
 
         joystick.button7.whileTrue(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(6)));
         joystick.button7.whileFalse(new RunCommand(() -> RobotMap.Component.climberLeft.setVoltage(0)));
@@ -63,7 +65,7 @@ public class DefaultOperator extends Operator {
         joystick.button10.whileFalse(new RunCommand(() -> RobotMap.Component.climberRight.setVoltage(0)));
         
         joystick.button11.onTrue(new InstantCommand(() -> RobotMap.Component.led.setHazardLights()));
-        joystick.button11.onFalse(new InstantCommand(() -> RobotMap.Component.led.cancelHazardLights()));
+        joystick.button12.onTrue(new InstantCommand(() -> RobotMap.Component.led.cancelHazardLights()));
 
 
         // //SYSID tuning
