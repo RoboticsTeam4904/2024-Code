@@ -19,10 +19,11 @@ public class SwerveGain extends Driver {
     }
 
     public void bindCommands() {
-        var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;
-        var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;
+        // var xyJoystick = RobotMap.HumanInput.Driver.xyJoystick;
+        // var turnJoystick = RobotMap.HumanInput.Driver.turnJoystick;
+        var xbox = RobotMap.HumanInput.Driver.xbox;
 
-        xyJoystick.button2.onTrue(
+        xbox.x().onTrue(
             new InstantCommand(() -> RobotMap.Component.chassis.brickMode())
         );
 
@@ -33,23 +34,23 @@ public class SwerveGain extends Driver {
         // xyJoystick.button2.whileTrue(RobotMap.Component.arm.scuffed()      
         // );
 
-        xyJoystick.button1.onTrue(
+        xbox.y().onTrue(
             new InstantCommand(() -> RobotMap.Component.chassis.zeroGyro())
         );
     }
 
     public double getX() {
-        double raw = RobotMap.HumanInput.Driver.xyJoystick.getX();
+        double raw = RobotMap.HumanInput.Driver.xbox.getLeftX();
         return scaleGain(raw, SPEED_EXP);
     }
 
     public double getY() {
-        double raw = RobotMap.HumanInput.Driver.xyJoystick.getY();
+        double raw = RobotMap.HumanInput.Driver.xbox.getLeftY();
         return scaleGain(raw, SPEED_EXP);
     }
 
     public double getTurnSpeed() {
-        double raw = RobotMap.HumanInput.Driver.turnJoystick.getX();
+        double raw = RobotMap.HumanInput.Driver.xbox.getRightX();
         return scaleGain(raw, TURN_EXP);
     }
 
